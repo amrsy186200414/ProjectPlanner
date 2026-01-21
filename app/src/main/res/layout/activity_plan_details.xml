@@ -212,19 +212,31 @@
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+    <ImageButton
+        android:id="@+id/addTaskBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/rounded_time_bg"
+        android:src="@drawable/ic_addtask"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/planSummaryCard"
+
+        android:backgroundTint="@color/white"/>
 
     <TextView
         android:id="@+id/tvTasksInfoLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="15dp"
         android:fontFamily="@font/koulen"
         android:paddingTop="10dp"
         android:text="TASKS "
         android:textColor="@color/dark_text"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/addTaskBtn"
         app:layout_constraintTop_toBottomOf="@id/planSummaryCard" />
     <TextView
         android:id="@+id/tvTasksInfoLabel_Info"
