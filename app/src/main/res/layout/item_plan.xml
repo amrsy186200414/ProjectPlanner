@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="10dp"
+    app:cardCornerRadius="25dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <View
+            android:id="@+id/statusIndicator"
+            android:layout_width="13dp"
+            android:layout_height="0dp"
+            android:background="@color/status_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvPlanTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:text="BUILD SCHOOL"
+            android:fontFamily="@font/koulen"
+            android:textColor="#333333"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/statusIndicator"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/detailsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            app:layout_constraintStart_toStartOf="@id/tvPlanTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvPlanTitle">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tvDurationLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:text="all duration:"
+                    android:textColor="#7B81C1"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvDurationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kumbh_sans_light"
+
+                    android:text="100d, 22h, 13m, 20s"
+                    android:textColor="#333333"
+                    android:textSize="13sp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvStartLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="start:"
+                    android:fontFamily="@font/kumbh_sans_light"
+
+                    android:textColor="#7B81C1"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvStartValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#333333"
+                    android:fontFamily="@font/kumbh_sans_light"
+
+                    android:textSize="13sp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvExpectedEndLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="expected end:"
+                    android:fontFamily="@font/kumbh_sans_light"
+
+                    android:textColor="#7B81C1"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvExpectedEndValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:textColor="#333333"
+                    android:textSize="13sp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvEndLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:text="end:"
+                    android:textColor="#7B81C1"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvEndValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:text=""
+                    android:textColor="#F44336"
+                    android:textSize="13sp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnStart"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_button_bg"
+            android:text="Start"
+            android:fontFamily="@font/kumbh_sans_light"
+
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@id/tvPlanTitle"
+            app:layout_constraintTop_toBottomOf="@id/detailsLayout" />
+
+        <TextView
+            android:id="@+id/tvTimeRemaining"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/rounded_time_bg"
+            android:fontFamily="@font/kumbh_sans_light"
+            android:gravity="center"
+            android:text="100d, 22h, 13m, 20s"
+            android:textColor="@color/status_green"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnStart"
+            app:layout_constraintTop_toTopOf="@id/btnStart" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

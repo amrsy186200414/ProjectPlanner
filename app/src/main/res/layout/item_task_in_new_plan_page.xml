@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:cardCornerRadius="15dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvTaskNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:textStyle="bold"
+                android:fontFamily="@font/koulen"
+                android:textColor="@color/text_like_background"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvTaskDash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="- "
+                android:textStyle="bold"
+                android:textColor="@color/text_like_background"
+                android:fontFamily="@font/koulen"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+
+            >
+
+            <TextView
+                android:id="@+id/tvTaskName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BUILD CLASSES"
+                android:textStyle="bold"
+                android:fontFamily="@font/koulen"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tvDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="all duration:"
+                    android:textColor="@color/text_like_background"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvDurationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2d"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="2dp">
+
+                <TextView
+                    android:id="@+id/tvStartAfter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="start after task:"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:textColor="@color/text_like_background"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/tvStartAfterValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="none"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:textColor="@color/black"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
