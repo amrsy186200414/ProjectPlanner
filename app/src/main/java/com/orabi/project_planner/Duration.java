@@ -11,6 +11,7 @@ public class Duration {
         days = 0;
         hours = 0;
         minutes = 0;
+        minutes=0;
     }
 
     public Duration(int months, int days, int hours, int minutes) {

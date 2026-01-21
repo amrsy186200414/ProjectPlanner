@@ -3,9 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="app_background">#B8BCF4</color> <color name="dark_text">#333333</color>
-    <color name="text_like_background">#616698</color>
-    <color name="light_gray_text">#757575</color>
-    <color name="button_bg">#1E1E1E</color> <color name="status_green">#4CAF50</color>   <color name="status_red">#E53935</color>     <color name="status_yellow">#FFC107</color>  <color name="status_green_bg">#E8F5E9</color>
-    <color name="status_red_bg">#FFEBEE</color>
-</resources>
+    <color name="app_background">#F4F7FA</color> <color name="card_background">#FFFFFF</color> <color name="dark_text">#1A202C</color>      <color name="secondary_text">#718096</color>  <color name="text_like_background">#4A5568</color> <color name="button_bg">#2563EB</color>       <color name="light_gray_text">#A0AEC0</color>
+
+    <color name="status_green">#10B981</color>    <color name="status_red">#EF4444</color>      <color name="status_yellow">#F59E0B</color>
+
+    <color name="status_green_bg">#D1FAE5</color>
+    <color name="chip_inactive_bg">#E2E8F0</color> </resources>

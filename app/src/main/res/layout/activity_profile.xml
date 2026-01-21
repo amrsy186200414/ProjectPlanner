@@ -6,54 +6,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="20dp"
-
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="24dp"
     android:paddingTop="40dp">
 
     <ImageButton
         android:id="@+id/btnBack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@drawable/rounded_time_bg"
         android:src="@drawable/ic_go_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:backgroundTint="@color/white"
-        android:layout_marginTop="5dp"/>
+        android:elevation="2dp"
+        android:layout_marginTop="0dp"/>
 
     <TextView
         android:id="@+id/tvProfileTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="YOUR "
-        android:fontFamily="@font/koulen"
+        android:fontFamily="sans-serif-light"
         android:textColor="@color/dark_text"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_marginStart="15dp"
+        android:textSize="28sp"
+        android:layout_marginStart="20dp"
         app:layout_constraintStart_toEndOf="@+id/btnBack"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"/>
 
     <TextView
         android:id="@+id/tvProfileTitle_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="profile "
-        android:fontFamily="@font/koulen"
-        android:textColor="@color/text_like_background"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:text="PROFILE "
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/button_bg"
+        android:textSize="28sp"
         app:layout_constraintStart_toEndOf="@+id/tvProfileTitle"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profileImageCard"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="30dp"
-        app:cardCornerRadius="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="40dp"
+        app:cardCornerRadius="80dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvProfileTitle">
@@ -62,17 +64,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_user" /> </androidx.cardview.widget.CardView>
+            android:src="@drawable/ic_user" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="USER"
-        android:fontFamily="@font/koulen"
-        android:textColor="@color/white"
-        android:textSize="40sp"
-        android:textStyle="bold"
+        android:text="USER NAME"
+        android:fontFamily="sans-serif-black"
+        android:textColor="@color/dark_text"
+        android:textSize="32sp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/profileImageCard" />
@@ -82,24 +85,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="UPDATE "
-        android:fontFamily="@font/koulen"
-        android:textSize="24dp"
+        android:fontFamily="sans-serif-light"
+        android:textSize="20sp"
         android:textColor="@color/dark_text"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvUserName" />
+
     <TextView
         android:id="@+id/labelUpdateName_Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-
-        android:text="Name"
-        android:textColor="@color/text_like_background"
-        android:fontFamily="@font/koulen"
-        android:textSize="24dp"
-        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:text="NAME"
+        android:textColor="@color/button_bg"
+        android:fontFamily="sans-serif-black"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/labelUpdateName"
         app:layout_constraintTop_toBottomOf="@id/tvUserName" />
 
@@ -113,32 +114,37 @@
         <EditText
             android:id="@+id/etUserName"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:background="@drawable/input_field_bg"
-            android:layout_marginTop="8dp"
-            android:paddingHorizontal="10dp"/>
+            android:layout_marginTop="12dp"
+            android:paddingHorizontal="16dp"
+            android:textColor="@color/dark_text"
+            android:fontFamily="sans-serif"
+            android:textSize="16sp"
+            android:elevation="2dp"/>
 
         <ImageButton
             android:id="@+id/btnSaveName"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_time_bg"
-            android:src="@drawable/ic_right" />
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_right"
+            app:tint="@color/white"
+            android:elevation="4dp"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/labelGeneralInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="32dp"
         android:text="GENERAL "
         android:textColor="@color/dark_text"
-        android:fontFamily="@font/koulen"
-        android:textSize="24dp"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif-light"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/updateNameLayout" />
 
@@ -146,108 +152,107 @@
         android:id="@+id/labelGeneralInfo_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="Info"
-        android:textColor="@color/text_like_background"
-        android:fontFamily="@font/koulen"
-        android:textSize="24dp"
-        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:text="INFO"
+        android:textColor="@color/button_bg"
+        android:fontFamily="sans-serif-black"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/labelGeneralInfo"
         app:layout_constraintTop_toBottomOf="@id/updateNameLayout" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="15dp"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="3dp"
+        app:cardBackgroundColor="@color/card_background"
         app:layout_constraintTop_toBottomOf="@id/labelGeneralInfo">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:padding="20dp">
 
-            <!-- جميع الخطط -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvAllPlansLabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="all plans:"
-
-                    android:textColor="@color/text_like_background"
-
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="18sp"
-                    />
+                    android:layout_weight="1"
+                    android:text="Total Plans"
+                    android:textColor="@color/secondary_text"
+                    android:fontFamily="sans-serif"
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:id="@+id/tvAllPlansValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="10"
-                    android:textColor="@color/black"
+                    android:textColor="@color/dark_text"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginStart="4dp" />
+                    android:fontFamily="sans-serif-medium"/>
             </LinearLayout>
 
-            <!-- الخطط قيد التنفيذ -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
 
                 <TextView
                     android:id="@+id/tvInProgressLabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="plans in progress:"
-                    android:textColor="@color/text_like_background"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="18sp"  />
+                    android:layout_weight="1"
+                    android:text="In Progress"
+                    android:textColor="@color/secondary_text"
+                    android:fontFamily="sans-serif"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvInProgressValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4"
-                    android:textColor="@color/black"
+                    android:textColor="@color/button_bg"
                     android:textSize="18sp"
-                    android:layout_marginStart="4dp" />
+                    android:fontFamily="sans-serif-medium"/>
             </LinearLayout>
 
-            <!-- الخطط المكتملة -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="5dp">
+                android:gravity="center_vertical"
+                android:layout_marginTop="12dp">
 
                 <TextView
                     android:id="@+id/tvCompletedLabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="plans completed:"
-                    android:textColor="@color/text_like_background"
-
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="18sp"  />
+                    android:layout_weight="1"
+                    android:text="Completed"
+                    android:textColor="@color/secondary_text"
+                    android:fontFamily="sans-serif"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tvCompletedValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="6"
-                    android:textColor="@color/black"
+                    android:textColor="@color/status_green"
                     android:textSize="18sp"
-                    android:layout_marginStart="4dp" />
+                    android:fontFamily="sans-serif-medium"/>
             </LinearLayout>
 
         </LinearLayout>

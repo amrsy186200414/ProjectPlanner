@@ -21,11 +21,13 @@ public class PlanDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_details);
 
+        // Initialize database helpers
         dbHelper = new DBHelperPlan(this);
         dbHelperTask = new DBHelperTask(this);
 
         planId = getIntent().getIntExtra("PLAN_ID", -1);
 
+        // Initialize views
         ImageButton btnBack = findViewById(R.id.btnBack);
         ImageButton addTaskBtn = findViewById(R.id.addTaskBtn);
         TextView tvPlanName = findViewById(R.id.tvPlanName);
@@ -60,9 +62,15 @@ public class PlanDetailsActivity extends AppCompatActivity {
                 updateTaskDisplay();
             } else {
                 tvPlanName.setText("Plan not found");
+                tvTasksNumberValue.setText("0");
+                tvCompletedTasksValue.setText("0");
+                tvAllDurationValue.setText("N/A");
             }
         } else {
             tvPlanName.setText("Invalid plan");
+            tvTasksNumberValue.setText("0");
+            tvCompletedTasksValue.setText("0");
+            tvAllDurationValue.setText("N/A");
         }
 
         btnBack.setOnClickListener(v -> finish());

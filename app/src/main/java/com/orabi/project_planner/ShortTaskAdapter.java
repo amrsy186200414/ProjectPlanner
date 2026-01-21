@@ -78,7 +78,7 @@ public class ShortTaskAdapter extends RecyclerView.Adapter<ShortTaskAdapter.Shor
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
             tvDuration = itemView.findViewById(R.id.tvDuration);
             tvDurationValue = itemView.findViewById(R.id.tvDurationValue);
-            tvStartAfter = itemView.findViewById(R.id.tvStartAfter);
+//            tvStartAfter = itemView.findViewById(R.id.tvStartAfterValue);
             tvStartAfterValue = itemView.findViewById(R.id.tvStartAfterValue);
 
             // ملاحظة: الـ CardView ليس له id في XML، لذا إما:
