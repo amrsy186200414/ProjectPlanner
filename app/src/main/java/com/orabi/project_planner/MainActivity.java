@@ -40,11 +40,10 @@ public class MainActivity extends AppCompatActivity {
 //        allPlans.add(new Plan("LEARN ANDROID", "5/10/24", "20/10/24", "completed"));
 //        allPlans.add(new Plan("FITNESS PLAN", "10/10/24", "30/10/24", "in_progress"));
 
-        Plan myplan=new Plan("BUILDing SCHOOL", "1/10/24", "15/10/24", "in_progress");
-        Plan myplan2=new Plan("LEARNing ANDROID", "5/10/24", "20/10/24", "completed");
+        Plan myplan=new Plan(1,"jjjj SCHOOL", "1/10/24", "in_progress");
+        Plan myplan2=new Plan(0,"LEARNing ANDROID", "5/10/24", "completed");
 
-        client_plan.addPlan(myplan);
-        client_plan.addPlan(myplan2);
+
 
         List<Plan> allPlans = client_plan.getPlansDetails();
 
@@ -74,3 +73,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 }
+
