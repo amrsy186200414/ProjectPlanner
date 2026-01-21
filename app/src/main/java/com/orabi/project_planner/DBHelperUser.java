@@ -48,6 +48,7 @@
 //        onCreate(db);
 //    }
 //
+//
 //    public int updateUserDetails(User user) {
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        ContentValues values = new ContentValues();

@@ -4,113 +4,122 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    app:cardCornerRadius="15dp"
-    >
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="15dp"
-        android:paddingBottom="5dp">
+        android:padding="12dp">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+        <View
+            android:id="@+id/sideIndicator"
+            android:layout_width="4dp"
+            android:layout_height="0dp"
+            android:background="@color/button_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvTaskNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:textStyle="bold"
-                android:fontFamily="@font/koulen"
-                android:textColor="@color/text_like_background"
-                android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tvTaskNumber"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/rounded_time_bg"
+            android:backgroundTint="#F0F4F8"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/button_bg"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-black"
+            app:layout_constraintStart_toEndOf="@id/sideIndicator"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvTaskDash"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="- "
-                android:textStyle="bold"
-                android:textColor="@color/text_like_background"
-                android:fontFamily="@font/koulen"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvTaskName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="BUILD CLASSES"
+            android:textColor="@color/dark_text"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-black"
+            app:layout_constraintStart_toEndOf="@id/tvTaskNumber"
+            app:layout_constraintTop_toTopOf="@id/tvTaskNumber"
+            app:layout_constraintBottom_toBottomOf="@id/tvTaskNumber" />
 
-            >
-
-            <TextView
-                android:id="@+id/tvTaskName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BUILD CLASSES"
-                android:textStyle="bold"
-                android:fontFamily="@font/koulen"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+        <LinearLayout
+            android:id="@+id/detailsContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/tvTaskNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTaskNumber">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                >
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="all duration:"
-                    android:textColor="@color/text_like_background"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="11sp" />
+                    android:text="Duration: "
+                    android:textColor="@color/secondary_text"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium" />
 
                 <TextView
                     android:id="@+id/tvDurationValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2d"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="11sp" />
+                    android:textColor="@color/dark_text"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-black" />
             </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="10dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_gravity="center_vertical"
+                android:background="#DDDDDD"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="2dp">
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/tvStartAfter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="start after task:"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textColor="@color/text_like_background"
-                    android:textSize="11sp" />
+                    android:text="After: "
+                    android:textColor="@color/secondary_text"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium" />
 
                 <TextView
                     android:id="@+id/tvStartAfterValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="none"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textColor="@color/black"
-                    android:textSize="11sp" />
+                    android:text="None"
+                    android:textColor="@color/dark_text"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-black" />
             </LinearLayout>
+
         </LinearLayout>
 
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

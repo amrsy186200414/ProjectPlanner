@@ -12,44 +12,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="40dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:paddingHorizontal="24dp"
         android:paddingBottom="20dp"
-
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="5dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/rounded_time_bg"
             android:src="@drawable/ic_go_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:backgroundTint="@color/white"/>
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PLAN "
             android:fontFamily="@font/koulen"
-
             android:textColor="@color/dark_text"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:layout_marginStart="15dp"
+            android:textSize="28sp"
+            android:layout_marginStart="16dp"
             android:layout_gravity="center_vertical" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="INFO"
             android:fontFamily="@font/koulen"
-
-            android:textColor="@color/text_like_background"
-            android:textSize="30sp"
-            android:textStyle="bold"
+            android:textColor="@color/button_bg"
+            android:textSize="28sp"
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
@@ -57,16 +50,17 @@
         android:id="@+id/planSummaryCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="24dp"
         app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/topBar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="15dp"
-            android:paddingVertical="5dp">
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/tvPlanName"
@@ -74,190 +68,90 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/koulen"
                 android:text="BUILD SCHOOL"
-                android:textColor="@color/black"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textColor="@color/dark_text"
+                android:textSize="24sp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+            <View
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:background="@color/button_bg"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"/>
 
-                <TextView
-                    android:id="@+id/tvAllDurationLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:text="all duration:"
-                    android:textColor="@color/text_like_background"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tvAllDurationValue"
-                    android:layout_width="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:layout_height="wrap_content"
-                    android:text="100d, 22h, 13m, 20s"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_marginStart="4dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+                <TextView android:id="@+id/tvAllDurationLabel" android:layout_width="110dp" android:layout_height="wrap_content" android:text="All Duration:" android:textColor="@color/secondary_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
+                <TextView android:id="@+id/tvAllDurationValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="100d, 22h" android:textColor="@color/dark_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:id="@+id/tvDescriptionLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:text="description:"
-                    android:textColor="@color/text_like_background"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tvDescriptionValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:text="100d, 22h, 13m, 20s"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    android:layout_marginStart="4dp" />
-            </LinearLayout>
-            <!-- تاريخ البدء -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp">
-
-                <TextView
-                    android:id="@+id/tvStartLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:text="start:"
-                    android:textColor="@color/text_like_background"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tvStartValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1/10/24"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="12sp"
-                    android:layout_marginStart="4dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+                <TextView android:id="@+id/tvDescriptionLabel" android:layout_width="110dp" android:layout_height="wrap_content" android:text="Description:" android:textColor="@color/secondary_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
+                <TextView android:id="@+id/tvDescriptionValue" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Project description goes here" android:textColor="@color/dark_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- عدد المهام -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="2dp">
-
-                <TextView
-                    android:id="@+id/tvTasksNumberLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="tasks number:"
-                    android:textColor="@color/text_like_background"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tvTasksNumberValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:text="5"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_marginStart="4dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+                <TextView android:id="@+id/tvStartLabel" android:layout_width="110dp" android:layout_height="wrap_content" android:text="Start Date:" android:textColor="@color/secondary_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
+                <TextView android:id="@+id/tvStartValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1/10/2024" android:textColor="@color/dark_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- المهام المكتملة -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="2dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="8dp">
+                <TextView android:id="@+id/tvTasksNumberLabel" android:layout_width="110dp" android:layout_height="wrap_content" android:text="Tasks Number:" android:textColor="@color/secondary_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
+                <TextView android:id="@+id/tvTasksNumberValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" android:textColor="@color/dark_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvCompletedTasksLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:text="completed tasks:"
-                    android:textColor="@color/text_like_background"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tvCompletedTasksValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2"
-                    android:fontFamily="@font/kumbh_sans_light"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    android:layout_marginStart="4dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <TextView android:id="@+id/tvCompletedTasksLabel" android:layout_width="110dp" android:layout_height="wrap_content" android:text="Completed:" android:textColor="@color/secondary_text" android:fontFamily="@font/kumbh_sans_light" android:textSize="14sp" />
+                <TextView android:id="@+id/tvCompletedTasksValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textColor="@color/status_green" android:fontFamily="@font/kumbh_sans_light" android:textStyle="bold" android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <ImageButton
-        android:id="@+id/addTaskBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="20dp"
-        android:background="@drawable/rounded_time_bg"
-        android:src="@drawable/ic_addtask"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/planSummaryCard"
 
-        android:backgroundTint="@color/white"/>
-
-    <TextView
-        android:id="@+id/tvTasksInfoLabel"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/tasksHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:fontFamily="@font/koulen"
-        android:paddingTop="10dp"
-        android:text="TASKS "
-        android:textColor="@color/dark_text"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/addTaskBtn"
-        app:layout_constraintTop_toBottomOf="@id/planSummaryCard" />
-    <TextView
-        android:id="@+id/tvTasksInfoLabel_Info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/koulen"
-        android:paddingTop="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/planSummaryCard">
 
-        android:text="Info"
-        android:textColor="@color/text_like_background"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/tvTasksInfoLabel"
-        app:layout_constraintTop_toBottomOf="@id/planSummaryCard" />
+        <ImageButton
+            android:id="@+id/addTaskBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/rounded_button_bg"
+            android:src="@drawable/ic_addtask"
+            android:elevation="4dp"/>
+
+        <TextView
+            android:id="@+id/tvTasksInfoLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/koulen"
+            android:text="TASKS "
+            android:textColor="@color/dark_text"
+            android:textSize="28sp" />
+
+        <TextView
+            android:id="@+id/tvTasksInfoLabel_Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/koulen"
+            android:text="LIST"
+            android:textColor="@color/button_bg"
+            android:textSize="28sp" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTasks"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTasksInfoLabel"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="20dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/tasksHeader"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

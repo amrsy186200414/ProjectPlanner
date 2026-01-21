@@ -2,6 +2,7 @@ package com.orabi.project_planner;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ public class AddPlanActivity extends AppCompatActivity {
     private LinearLayout tasksContainer;
     private List<Task> taskList = new ArrayList<>();
     private int taskCounter = 1;
+    DBHelperPlan client_plan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class AddPlanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_plan);
 
 
-
+        client_plan=new DBHelperPlan(this);
         EditText etPlanName = findViewById(R.id.etPlanName);
         EditText etPlanDescription = findViewById(R.id.etPlanDescription);
 //        EditText etTaskName = findViewById(R.id.etTaskName);
@@ -83,7 +85,11 @@ public class AddPlanActivity extends AppCompatActivity {
 //            etTaskName.requestFocus();
 //        });
 
-        btnSavePlan.setOnClickListener(v -> {
+        btnSavePlan.setOnClickListener(v ->
+
+        {
+            try {
+
             String planName = etPlanName.getText().toString().trim();
             String planDescription = etPlanDescription.getText().toString().trim();
 
@@ -92,16 +98,40 @@ public class AddPlanActivity extends AppCompatActivity {
                 return;
             }
 
-            if (taskList.isEmpty()) {
-                Toast.makeText(this, "يرجى إضافة مهمة واحدة على الأقل", Toast.LENGTH_SHORT).show();
-                return;
+//            if (taskList.isEmpty()) {
+//                Toast.makeText(this, "يرجى إضافة مهمة واحدة على الأقل", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+
+            Plan newPlan = new Plan(planName,"", "Waiting", planDescription );
+            client_plan.addPlan(newPlan);
+
+            List<Plan> allPlans = client_plan.getPlansDetails();
+
+            Log.d("DEBUG", "Number of plans: " + allPlans.size());
+        if (allPlans.isEmpty()) {
+            Log.d("DEBUG", "Database is empty!");
+        } else {
+            for (int i = 0; i < allPlans.size(); i++) {
+                Plan p = allPlans.get(i);
+                Log.d("DEBUG", "Plan " + i + ": " +
+                        "ID=" + p.getId() + ", " +
+                        "Title=" + p.getTitle() + ", " +
+                        "Start=" + p.getStartDate() + ", " +
+                        "Status=" + p.getStatus());
             }
+        }
+                Toast.makeText(this, "تم حفظ الخطة بنجاح!", Toast.LENGTH_SHORT).show();
+                finish();
+        }
+                 catch (Exception e) {
+            // Simple error handling
+            Log.e("SAVE_ERROR", "Error: " + e.toString());
+//            Toast.makeText(this, "خطأ: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }}
 
-//            Plan newPlan = new Plan(0,planName, "1/10/24",  "in_progress");
-
-            Toast.makeText(this, "تم حفظ الخطة بنجاح!", Toast.LENGTH_SHORT).show();
-            finish();
-        });
+        );
     }
 
     private void addTaskToView(Task task, int taskNumber) {
