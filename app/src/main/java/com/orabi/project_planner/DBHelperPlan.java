@@ -18,7 +18,7 @@ public class DBHelperPlan extends SQLiteOpenHelper {
     // Database Name
     static final String DATABASE = "PROJECT_PLANNER.db";
     // Database Version
-    static final int DB_VERSION = 1;
+    static final int DB_VERSION = 2;
     // Table Name
     static final String TABLE = "Plan";
     // Table Field Name
@@ -28,7 +28,10 @@ public class DBHelperPlan extends SQLiteOpenHelper {
 
     static final String P_STARTDATE = "startDate";
     static final String P_EXPECTED_END_DATE = "expectedEndDate";
-    static final String P_ALL_DURATION = "allDurationMillis";
+    static final String P_DURATION = "duration";
+    static final String P_DESCRIBTION = "describtion";
+
+
     Context context ;
     // Override constructor
     public DBHelperPlan(Context context) {
@@ -46,7 +49,9 @@ public class DBHelperPlan extends SQLiteOpenHelper {
                 + P_STATUS + " TEXT,"  // Default to 0 (false)
                 + P_STARTDATE + " TEXT,"
                 + P_EXPECTED_END_DATE  + " TEXT,"
-                + P_ALL_DURATION  + " INTEGER DEFAULT 0"
+                + P_DURATION  + " TEXT,"
+                + P_DESCRIBTION  + " TEXT"
+
                 + ")";
         System.out.println(" ----- create query : " + createQuery);
         // Toast.makeText(context, " here createQuery" + createQuery   , Toast.LENGTH_LONG).show();
@@ -67,10 +72,12 @@ public class DBHelperPlan extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(P_TITLE, plan.getTitle());
-        values.put(P_ALL_DURATION, plan.getAllDurationInSeconds());
+        values.put(P_DURATION, plan.getDuration().toString());
         values.put(P_STATUS, plan.getStatus());
         values.put(P_STARTDATE, plan.getStartDate());
         values.put(P_EXPECTED_END_DATE, plan.getExpectedEndDate());
+        values.put(P_DESCRIBTION, plan.getDescribtion());
+
 // Inserting Row
         db.insert(TABLE, null, values);
         db.close();
@@ -80,10 +87,12 @@ public class DBHelperPlan extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(P_TITLE, plan.getTitle());
-        values.put(P_ALL_DURATION, plan.getAllDurationInSeconds());
+        values.put(P_DURATION, plan.getDuration().toString());
         values.put(P_STATUS, plan.getStatus());
         values.put(P_STARTDATE, plan.getStartDate());
         values.put(P_EXPECTED_END_DATE, plan.getExpectedEndDate());
+        values.put(P_DESCRIBTION, plan.getDescribtion());
+
 // updating row
         int result  = db.update(TABLE, values, P_ID + " = ?",
                 new String[]{String.valueOf(plan.getId())});
@@ -109,7 +118,9 @@ public class DBHelperPlan extends SQLiteOpenHelper {
                 plan.setStatus(cursor.getString(2));
                 plan.setStartDate(cursor.getString(3));
                 plan.setExpectedEndDate(cursor.getString(4));
-                plan.setAllDurationInSeconds(cursor.getInt(5));
+                plan.setDescribtion(cursor.getString(6));
+                plan.setDuration(Duration.fromString(cursor.getString(5)));
+
 // Adding student information to list
                 plans.add(plan);
             } while (cursor.moveToNext());
@@ -135,7 +146,8 @@ public class DBHelperPlan extends SQLiteOpenHelper {
                     wantedPlan.setStatus(cursor.getString(2));
                     wantedPlan.setStartDate(cursor.getString(3));
                     wantedPlan.setExpectedEndDate(cursor.getString(4));
-                    wantedPlan.setAllDurationInSeconds(cursor.getInt(5));
+                    wantedPlan.setDescribtion(cursor.getString(6));
+                    wantedPlan.setDuration(Duration.fromString(cursor.getString(5)));
                     return wantedPlan;
 
                 }
