@@ -28,9 +28,9 @@ public class PlanDetailsActivity extends AppCompatActivity {
         }
 
         List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task(1, "BUILD CLASSES", "2d", "completed"));
-        tasks.add(new Task(1, "PAINT WALLS", "1d", "in_progress"));
-        tasks.add(new Task(1, "INSTALL WINDOWS", "3d", "pending"));
+//        tasks.add(new Task(1, "BUILD CLASSES", "2d", "completed"));
+//        tasks.add(new Task(1, "PAINT WALLS", "1d", "in_progress"));
+//        tasks.add(new Task(1, "INSTALL WINDOWS", "3d", "pending"));
 //
 //        TaskAdapter adapter = new TaskAdapter(tasks);
 //        rvTasks.setLayoutManager(new LinearLayoutManager(this));

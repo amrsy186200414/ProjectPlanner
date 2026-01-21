@@ -32,11 +32,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
-        holder.tvTaskName.setText(task.taskName);
-        holder.tvDuration.setText("duration: " + task.duration);
+        holder.tvTaskName.setText(task.getName());
+        holder.tvDuration.setText("duration: " + task.getExpected_duration());
 
         // تطبيق الألوان الجانبية (الأخضر للمكتمل، الأصفر للجاري)
-        if ("completed".equals(task.status)) {
+        if ("completed".equals(task.getStatus())) {
             holder.indicator.setBackgroundColor(Color.parseColor("#4CAF50")); // أخضر
         } else {
             holder.indicator.setBackgroundColor(Color.parseColor("#FFC107")); // أصفر

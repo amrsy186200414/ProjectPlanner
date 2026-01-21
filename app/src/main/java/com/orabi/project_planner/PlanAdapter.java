@@ -28,13 +28,22 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
     public void onBindViewHolder(@NonNull PlanViewHolder holder, int position) {
         Plan plan = planList.get(position);
         holder.tvTitle.setText(plan.getTitle());
+
+        // Set the start date (this is what you're missing!)
+        holder.tvStartValue.setText(plan.getStartDate());
+
+        // For now, we'll set dummy values for the other fields since your Plan class doesn't have them
+        holder.tvDurationValue.setText("Calculating...");
+        holder.tvExpectedEndValue.setText("Not set");
+        holder.tvEndValue.setText("Not ended");
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), PlanDetailsActivity.class);
-            // نرسل الـ ID الخاص بالخطة لنعرف أي بيانات سنعرض في الشاشة القادمة
             intent.putExtra("PLAN_ID", plan.getId());
             intent.putExtra("PLAN_TITLE", plan.getTitle());
             v.getContext().startActivity(intent);
         });
+
         // تغيير لون الشريط الجانبي بناءً على الحالة
         int colorRes;
         switch (plan.getStatus()) {
@@ -44,7 +53,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         }
         holder.statusIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), colorRes));
     }
-
     @Override
     public int getItemCount() {
         return planList.size();
@@ -52,11 +60,20 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 
     static class PlanViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
+        TextView tvDurationValue;  // Add this
+        TextView tvStartValue;     // Add this
+        TextView tvExpectedEndValue; // Add this
+        TextView tvEndValue;       // Add this
         View statusIndicator;
 
         public PlanViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvPlanTitle);
+            // Add these lines to connect all the text views
+            tvDurationValue = itemView.findViewById(R.id.tvDurationValue);
+            tvStartValue = itemView.findViewById(R.id.tvStartValue);
+            tvExpectedEndValue = itemView.findViewById(R.id.tvExpectedEndValue);
+            tvEndValue = itemView.findViewById(R.id.tvEndValue);
             statusIndicator = itemView.findViewById(R.id.statusIndicator);
         }
     }

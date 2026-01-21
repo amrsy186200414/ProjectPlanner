@@ -6,14 +6,15 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "plans_table")
 public class Plan {
 
-    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String title;
     private String startDate;
     private String expectedEndDate;
     private String status; // (completed, late, in_progress)
-    private long allDurationMillis; // سنخزن المدة بالملي ثانية ليسهل حسابها
+    private long allDurationInSeconds; // سنخزن المدة بالملي ثانية ليسهل حسابها
+
+    private String Duration;
 
     public Plan(){
         this.title = null;
@@ -21,11 +22,11 @@ public class Plan {
         this.expectedEndDate = null;
         this.status = null;
     }
-    public Plan(String title, String startDate, String expectedEndDate, String status) {
+    public Plan(int id,String title, String startDate, String status) {
         this.title = title;
         this.startDate = startDate;
-        this.expectedEndDate = expectedEndDate;
         this.status = status;
+        this.id=id;
     }
 
     public int getId() {
@@ -44,12 +45,12 @@ public class Plan {
         this.status = status;
     }
 
-    public long getAllDurationMillis() {
-        return allDurationMillis;
+    public long getAllDurationInSeconds() {
+        return allDurationInSeconds;
     }
 
-    public void setAllDurationMillis(long allDurationMillis) {
-        this.allDurationMillis = allDurationMillis;
+    public void setAllDurationInSeconds(long allDurationMillis) {
+        this.allDurationInSeconds = allDurationMillis;
     }
 
     public String getStartDate() {

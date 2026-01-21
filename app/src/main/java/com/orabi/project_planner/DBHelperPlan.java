@@ -67,7 +67,7 @@ public class DBHelperPlan extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(P_TITLE, plan.getTitle());
-        values.put(P_ALL_DURATION, plan.getAllDurationMillis());
+        values.put(P_ALL_DURATION, plan.getAllDurationInSeconds());
         values.put(P_STATUS, plan.getStatus());
         values.put(P_STARTDATE, plan.getStartDate());
         values.put(P_EXPECTED_END_DATE, plan.getExpectedEndDate());
@@ -80,7 +80,7 @@ public class DBHelperPlan extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(P_TITLE, plan.getTitle());
-        values.put(P_ALL_DURATION, plan.getAllDurationMillis());
+        values.put(P_ALL_DURATION, plan.getAllDurationInSeconds());
         values.put(P_STATUS, plan.getStatus());
         values.put(P_STARTDATE, plan.getStartDate());
         values.put(P_EXPECTED_END_DATE, plan.getExpectedEndDate());
@@ -109,7 +109,7 @@ public class DBHelperPlan extends SQLiteOpenHelper {
                 plan.setStatus(cursor.getString(2));
                 plan.setStartDate(cursor.getString(3));
                 plan.setExpectedEndDate(cursor.getString(4));
-                plan.setAllDurationMillis(cursor.getInt(5));
+                plan.setAllDurationInSeconds(cursor.getInt(5));
 // Adding student information to list
                 plans.add(plan);
             } while (cursor.moveToNext());
@@ -135,7 +135,7 @@ public class DBHelperPlan extends SQLiteOpenHelper {
                     wantedPlan.setStatus(cursor.getString(2));
                     wantedPlan.setStartDate(cursor.getString(3));
                     wantedPlan.setExpectedEndDate(cursor.getString(4));
-                    wantedPlan.setAllDurationMillis(cursor.getInt(5));
+                    wantedPlan.setAllDurationInSeconds(cursor.getInt(5));
                     return wantedPlan;
 
                 }
@@ -146,6 +146,15 @@ public class DBHelperPlan extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return null;
+    }
+
+    public int deletePlan(Plan plan) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE, P_ID + " = ?",
+                new String[]{String.valueOf(plan.getId())});
+        db.close();
+        //@return the number of rows affected
+        return result;
     }
 
 }
