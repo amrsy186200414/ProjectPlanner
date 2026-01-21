@@ -7,6 +7,10 @@ public class Duration {
     int minutes;
 
     public Duration() {
+        months = 0;
+        days = 0;
+        hours = 0;
+        minutes = 0;
         minutes=0;
     }
 
@@ -47,17 +51,26 @@ public class Duration {
         return totalMinutes;
     }
 
+    // ADD THIS METHOD: Convert milliseconds to Duration
+    public static Duration fromMillis(long millis) {
+        long totalSeconds = millis / 1000;
+        long totalMinutes = totalSeconds / 60;
+
+        // Call the existing fromMinutes method
+        return fromMinutes((int) totalMinutes);
+    }
+
     public static Duration fromMinutes(int minutes) {
         // Approximate conversions
         int months = minutes / (30 * 24 * 60);
         int days = (minutes - months * (30 * 24 * 60)) / (24 * 60);
         int hours = (minutes - months * (30 * 24 * 60) - days * (24 * 60)) / 60;
-        int minunts_still = (minutes - months * (30 * 24 * 60) - days * (24 * 60) - hours * 60);
+        int minutes_still = (minutes - months * (30 * 24 * 60) - days * (24 * 60) - hours * 60);
 
-        return new Duration(months, days, hours, minunts_still);
+        return new Duration(months, days, hours, minutes_still);
     }
 
-    // New method: parses string back to Duration
+    // ADD THIS METHOD: Convert string representation to Duration
     public static Duration fromString(String durationStr) {
         // Default values
         int months = 0;
@@ -65,8 +78,14 @@ public class Duration {
         int hours = 0;
         int minutes = 0;
 
-        // Remove trailing comma if present
+        if (durationStr == null || durationStr.isEmpty()) {
+            return new Duration();
+        }
+
+        // Try to parse the string format (e.g., "2 mon ,5 d ,3 h ,10 min ,")
         String str = durationStr.trim();
+
+        // Remove trailing comma if present
         if (str.endsWith(",")) {
             str = str.substring(0, str.length() - 1).trim();
         }
@@ -82,7 +101,7 @@ public class Duration {
 
             // Split by space to separate value and unit
             String[] valueUnit = part.split("\\s+");
-            if (valueUnit.length != 2) {
+            if (valueUnit.length < 2) {
                 continue; // Skip invalid format
             }
 
@@ -115,7 +134,6 @@ public class Duration {
         return new Duration(months, days, hours, minutes);
     }
 
-    // Helper method to format as string
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -152,6 +170,8 @@ public class Duration {
         // Add trailing comma to match your original format
         if (sb.length() > 0) {
             sb.append(" ,");
+        } else {
+            sb.append("0 min ,");
         }
 
         return sb.toString();

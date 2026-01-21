@@ -1,22 +1,34 @@
 package com.orabi.project_planner;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> taskList;
+    private Context context;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy, hh:mm a", Locale.getDefault());
+    private DBHelperTask dbHelperTask;
 
-    public TaskAdapter(List<Task> taskList) {
+    public TaskAdapter(List<Task> taskList, Context context) {
         this.taskList = taskList;
+        this.context = context;
+        this.dbHelperTask = new DBHelperTask(context);
+    }
+
+    public void updateTasks(List<Task> newList) {
+        this.taskList = newList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -30,7 +42,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
 
-        // Set task number and name
+        // Set basic info
         holder.tvTaskNumber.setText(String.valueOf(position + 1));
         holder.tvTaskName.setText(task.getName());
 
@@ -48,13 +60,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.tvStartDateValue.setText("Not started");
         }
 
-        // Set expected end date (calculate based on start date + duration)
+        // Calculate expected end date
         if (task.getStart_date() != null && task.getExpected_duration() != null) {
-            // Calculate expected end date
-            long durationMillis = task.getExpected_duration().toMillis();
-            long endTime = task.getStart_date().getTime() + durationMillis;
-            String expectedEnd = dateFormat.format(new java.util.Date(endTime));
-            holder.tvExpectedEndValue.setText(expectedEnd);
+            long endTime = task.getStart_date().getTime() + task.getExpected_duration().toMillis();
+            holder.tvExpectedEndValue.setText(dateFormat.format(new Date(endTime)));
         } else {
             holder.tvExpectedEndValue.setText("N/A");
         }
@@ -63,54 +72,90 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         String status = task.getStatus();
         holder.tvStatusValue.setText(status != null ? status : "Waiting");
 
-        // Set status color
+        // Set button text and color based on status
         if ("completed".equals(status)) {
-            holder.tvStatusValue.setTextColor(Color.parseColor("#4CAF50")); // Green
-            holder.indicator.setBackgroundColor(Color.parseColor("#4CAF50"));
-        } else if ("in_progress".equals(status)) {
-            holder.tvStatusValue.setTextColor(Color.parseColor("#FFC107")); // Yellow
-            holder.indicator.setBackgroundColor(Color.parseColor("#FFC107"));
-        } else if ("late".equals(status)) {
-            holder.tvStatusValue.setTextColor(Color.parseColor("#F44336")); // Red
-            holder.indicator.setBackgroundColor(Color.parseColor("#F44336"));
-        } else {
-            holder.tvStatusValue.setTextColor(Color.parseColor("#757575")); // Gray
-            holder.indicator.setBackgroundColor(Color.parseColor("#757575"));
-        }
-
-        // Set button text based on status
-        if ("completed".equals(status)) {
-            holder.btnAction.setText("Done");
+            holder.btnAction.setText("Completed");
             holder.btnAction.setEnabled(false);
+            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg);
+            holder.indicator.setBackgroundColor(Color.parseColor("#4CAF50"));
+            holder.tvStatusValue.setTextColor(Color.parseColor("#4CAF50"));
+            holder.tvTimeRemainingBadge.setText("");
         } else if ("in_progress".equals(status)) {
-            holder.btnAction.setText("Finish");
-        } else {
-            holder.btnAction.setText("Start");
-        }
+            holder.btnAction.setText("End");
+            holder.btnAction.setEnabled(true);
+            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg);
+            holder.indicator.setBackgroundColor(Color.parseColor("#FFC107"));
+            holder.tvStatusValue.setTextColor(Color.parseColor("#FFC107"));
 
-        // Calculate and display time remaining if task is in progress
-        if ("in_progress".equals(status) && task.getStart_date() != null && task.getExpected_duration() != null) {
-            long currentTime = System.currentTimeMillis();
-            long startTime = task.getStart_date().getTime();
-            long duration = task.getExpected_duration().toMillis();
-            long endTime = startTime + duration;
+            // Calculate remaining time
+            if (task.getStart_date() != null && task.getExpected_duration() != null) {
+                long currentTime = System.currentTimeMillis();
+                long startTime = task.getStart_date().getTime();
+                long duration = task.getExpected_duration().toMillis();
+                long endTime = startTime + duration;
 
-            if (currentTime < endTime) {
-                long remaining = endTime - currentTime;
-                // Convert milliseconds to days, hours, minutes
-                long days = remaining / (1000 * 60 * 60 * 24);
-                long hours = (remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-                long minutes = (remaining % (1000 * 60 * 60)) / (1000 * 60);
-
-                holder.tvTimeRemainingBadge.setText(days + "d, " + hours + "h, " + minutes + "m");
-                holder.tvTimeRemainingBadge.setTextColor(Color.parseColor("#4CAF50")); // Green
-            } else {
-                holder.tvTimeRemainingBadge.setText("Late!");
-                holder.tvTimeRemainingBadge.setTextColor(Color.parseColor("#F44336")); // Red
+                if (currentTime < endTime) {
+                    long remaining = endTime - currentTime;
+                    long days = remaining / (1000 * 60 * 60 * 24);
+                    long hours = (remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+                    long minutes = (remaining % (1000 * 60 * 60)) / (1000 * 60);
+                    holder.tvTimeRemainingBadge.setText(days + "d, " + hours + "h, " + minutes + "m");
+                    holder.tvTimeRemainingBadge.setTextColor(Color.parseColor("#4CAF50"));
+                } else {
+                    holder.tvTimeRemainingBadge.setText("Late!");
+                    holder.tvTimeRemainingBadge.setTextColor(Color.parseColor("#F44336"));
+                }
             }
         } else {
+            holder.btnAction.setText("Start");
+            holder.btnAction.setEnabled(true);
+            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg);
+            holder.indicator.setBackgroundColor(Color.parseColor("#757575"));
+            holder.tvStatusValue.setTextColor(Color.parseColor("#757575"));
             holder.tvTimeRemainingBadge.setText("");
         }
+
+        // Set click listener for action button
+        holder.btnAction.setOnClickListener(v -> {
+            if ("Start".equals(holder.btnAction.getText().toString())) {
+                startTask(task);
+            } else if ("End".equals(holder.btnAction.getText().toString())) {
+                endTask(task);
+            }
+        });
+    }
+
+    private void startTask(Task task) {
+        task.setStart_date(new Date());
+        task.setStatus("in_progress");
+        dbHelperTask.updateTaskDetails(task);
+        notifyDataSetChanged();
+    }
+
+    private void endTask(Task task) {
+        // Calculate real duration
+        if (task.getStart_date() != null) {
+            long realDuration = System.currentTimeMillis() - task.getStart_date().getTime();
+            task.setReal_duration(Duration.fromMillis(realDuration));
+        }
+
+        task.setStatus("completed");
+        dbHelperTask.updateTaskDetails(task);
+
+        // Get the next task ID from database
+        // Since we don't have getNextTaskId method, we'll need to find the next task
+        // based on position in the list for now
+        int currentPosition = taskList.indexOf(task);
+        if (currentPosition < taskList.size() - 1) {
+            Task nextTask = taskList.get(currentPosition + 1);
+            if (nextTask != null && "Waiting".equals(nextTask.getStatus())) {
+                nextTask.setStart_date(new Date());
+                nextTask.setStatus("in_progress");
+                dbHelperTask.updateTaskDetails(nextTask);
+            }
+        }
+
+        notifyDataSetChanged();
     }
 
     @Override
@@ -122,12 +167,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         TextView tvTaskNumber, tvTaskName, tvDurationValue, tvStartDateValue;
         TextView tvExpectedEndValue, tvStatusValue, tvTimeRemainingBadge;
         View indicator;
-        TextView btnAction;
+        Button btnAction;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            // Find all views from item_task.xml
             tvTaskNumber = itemView.findViewById(R.id.tvTaskNumber);
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
             tvDurationValue = itemView.findViewById(R.id.tvDurationValue);
@@ -137,12 +180,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             tvTimeRemainingBadge = itemView.findViewById(R.id.tvTimeRemainingBadge);
             indicator = itemView.findViewById(R.id.taskStatusIndicator);
             btnAction = itemView.findViewById(R.id.btnAction);
-
-            // Optional: Add click listener to the action button
-            btnAction.setOnClickListener(v -> {
-                // Handle start/finish button click
-                // You can implement this later
-            });
         }
     }
 }
