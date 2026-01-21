@@ -30,9 +30,9 @@ public class ShortTaskAdapter extends RecyclerView.Adapter<ShortTaskAdapter.Shor
 
         // تعيين البيانات حسب XML الجديد
         holder.tvTaskNumber.setText(String.valueOf(position + 1));
-        holder.tvTaskName.setText(task.taskName);
-        holder.tvDurationValue.setText(task.duration);
-        holder.tvStartAfterValue.setText(task.startAfterTask != null ? task.startAfterTask : "none");
+        holder.tvTaskName.setText(task.getName());
+        holder.tvDurationValue.setText(task.getExpected_duration().toString());
+//        holder.tvStartAfterValue.setText(task.startAfterTask != null ? task.startAfterTask : "none");
 
         // تغيير لون الخلفية للمهمة
 //        if (position % 2 == 0) {

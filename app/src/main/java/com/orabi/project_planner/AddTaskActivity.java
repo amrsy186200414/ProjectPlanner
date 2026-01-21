@@ -93,9 +93,9 @@ public class AddTaskActivity extends AppCompatActivity {
                 }
 
                 // إنشاء كائن Task
-                Task newTask = new Task(0, taskName, duration, "pending");
-                newTask.startAfterTask = startAfter;
-                newTask.taskId = taskCounter;
+                Task newTask = new Task();
+//                newTask.startAfterTask = startAfter;
+                newTask.setId(taskCounter)  ;
 
                 // إضافة المهمة للقائمة
                 shortTaskAdapter.addTask(newTask);
@@ -183,8 +183,8 @@ public class AddTaskActivity extends AppCompatActivity {
     private boolean validateTaskDependencies() {
         for (int i = 0; i < taskList.size(); i++) {
             Task task = taskList.get(i);
-            String after = task.startAfterTask;
-
+//            String after = task.startAfterTask;
+            String after="1";
             if (after != null && !after.equalsIgnoreCase("none")) {
                 try {
                     int afterNum = Integer.parseInt(after);
@@ -227,8 +227,8 @@ public class AddTaskActivity extends AppCompatActivity {
     private boolean hasCircularDependency(int taskIndex, int dependsOnIndex) {
         // كشف الاعتمادات الدائرية البسيطة
         Task dependsOnTask = taskList.get(dependsOnIndex);
-        String dependsOnValue = dependsOnTask.startAfterTask;
-
+//        String dependsOnValue = dependsOnTask.startAfterTask;
+        String dependsOnValue ="2";
         if (dependsOnValue != null && !dependsOnValue.equalsIgnoreCase("none")) {
             try {
                 int nextIndex = Integer.parseInt(dependsOnValue) - 1;
@@ -258,9 +258,9 @@ public class AddTaskActivity extends AppCompatActivity {
         editor.putInt("task_count", taskList.size());
         for (int i = 0; i < taskList.size(); i++) {
             Task task = taskList.get(i);
-            editor.putString("task_" + i + "_name", task.taskName);
-            editor.putString("task_" + i + "_duration", task.duration);
-            editor.putString("task_" + i + "_after", task.startAfterTask);
+            editor.putString("task_" + i + "_name", task.getName());
+            editor.putString("task_" + i + "_duration", task.getExpected_duration().toString());
+            editor.putString("task_" + i + "_after", "1");
         }
         editor.apply();
     }
@@ -277,11 +277,11 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private void showTaskOptions(int position, Task task) {
         // يمكنك استخدام AlertDialog هنا
-        Toast.makeText(this,
-                "المهمة: " + task.taskName + "\n" +
-                        "المدة: " + task.duration + "\n" +
-                        "تبدأ بعد: " + task.startAfterTask,
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,
+//                "المهمة: " + task.taskName + "\n" +
+//                        "المدة: " + task.duration + "\n" +
+//                        "تبدأ بعد: " + task.startAfterTask,
+//                Toast.LENGTH_SHORT).show();
     }
 
     private void addItemDecoration() {
