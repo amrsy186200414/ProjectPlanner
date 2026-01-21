@@ -1,125 +1,155 @@
 package com.orabi.project_planner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AddTaskActivity extends AppCompatActivity {
 
+    private DBHelperTask client_task;
     private RecyclerView rvTasks;
     private ShortTaskAdapter shortTaskAdapter;
     private List<Task> taskList = new ArrayList<>();
+    private Map<Integer, Task> taskMap = new HashMap<>(); // For quick lookup by ID
     private int taskCounter = 1;
+    private Spinner spinnerTaskStart;
+    private ArrayAdapter<String> spinnerAdapter;
+    private List<String> startOptions = new ArrayList<>();
+    private int planId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
 
+        // Get plan ID from intent
+        planId = getIntent().getIntExtra("PLAN_ID", -1);
+        if (planId == -1) {
+            Toast.makeText(this, "خطأ: لم يتم تحديد الخطة", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        client_task = new DBHelperTask(this);
+
         // ربط العناصر
         ImageButton btnBack = findViewById(R.id.btnBack);
         Button btnSavePlan = findViewById(R.id.btnSavePlan);
         Button btnAddPreview = findViewById(R.id.btnAddPreview);
         EditText etTaskName = findViewById(R.id.etTaskName);
-        EditText etTaskStart = findViewById(R.id.etTaskStrat);
         EditText etTaskDuration = findViewById(R.id.etTaskDuration);
+
+        // Spinner
+        spinnerTaskStart = findViewById(R.id.etTaskStrat);
 
         // RecyclerView
         rvTasks = findViewById(R.id.rvTasks);
-
-        // إعداد RecyclerView
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
         shortTaskAdapter = new ShortTaskAdapter(taskList);
         rvTasks.setAdapter(shortTaskAdapter);
 
-        // إضافة فواصل بين العناصر
-        addItemDecoration();
+        // إعداد Spinner
+        setupSpinner();
 
         // ===== زر ADD (إضافة مهمة جديدة) =====
         btnAddPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // جلب البيانات من الحقول
                 String taskName = etTaskName.getText().toString().trim();
-                String startAfter = etTaskStart.getText().toString().trim();
-                String duration = etTaskDuration.getText().toString().trim();
+                String durationStr = etTaskDuration.getText().toString().trim();
 
-                // التحقق من البيانات
                 if (taskName.isEmpty()) {
                     etTaskName.setError("يرجى إدخال اسم المهمة");
                     etTaskName.requestFocus();
                     return;
                 }
 
-                if (duration.isEmpty()) {
+                if (durationStr.isEmpty()) {
                     etTaskDuration.setError("يرجى إدخال المدة");
                     etTaskDuration.requestFocus();
                     return;
                 }
 
-                // تنسيق المدة (إضافة 'd' إذا لم تكن موجودة)
-                if (!duration.toLowerCase().endsWith("d")) {
-                    duration = duration + "d";
+                // Parse duration (expecting format like "5d" or just "5")
+                int days = 0;
+                try {
+                    // Remove non-digits
+                    String daysStr = durationStr.replaceAll("[^0-9]", "");
+                    days = Integer.parseInt(daysStr);
+                } catch (NumberFormatException e) {
+                    etTaskDuration.setError("يرجى إدخال مدة صحيحة");
+                    etTaskDuration.requestFocus();
+                    return;
                 }
 
-                // معالجة حقل Start After
-                if (startAfter.isEmpty()) {
-                    startAfter = "none";
-                } else {
-                    // إذا كان رقماً، تحقق من وجود المهمة
+                // Get selected previous task from spinner
+                String selectedOption = spinnerTaskStart.getSelectedItem().toString();
+                Task previousTask = null;
+
+                if (selectedOption.startsWith("After Task")) {
                     try {
-                        int afterNum = Integer.parseInt(startAfter);
-                        if (afterNum < 1 || afterNum > taskList.size()) {
-                            etTaskStart.setError("يجب أن تكون المهمة موجودة");
-                            etTaskStart.requestFocus();
-                            return;
-                        }
+                        // Extract task ID from option like "After Task 1: Task Name"
+                        String numStr = selectedOption.replaceAll("[^0-9]", "");
+                        int previousTaskId = Integer.parseInt(numStr);
+                        previousTask = taskMap.get(previousTaskId);
                     } catch (NumberFormatException e) {
-                        // إذا لم يكن رقماً، يجب أن يكون "none"
-                        if (!startAfter.equalsIgnoreCase("none")) {
-                            etTaskStart.setError("أدخل 'none' أو رقم مهمة");
-                            etTaskStart.requestFocus();
-                            return;
-                        }
+                        // If parsing fails, keep as null
                     }
                 }
 
-                // إنشاء كائن Task
+                // Create new task
                 Task newTask = new Task();
-//                newTask.startAfterTask = startAfter;
-                newTask.setId(taskCounter)  ;
+                newTask.setId(taskCounter);
+                newTask.setName(taskName);
+                newTask.setExpected_duration(new Duration(0, days, 0, 0));
+                newTask.setPrevious_task(previousTask); // Set previous task
+                newTask.setPlanid(planId); // Set the plan ID
+                newTask.setStart_date(new Date()); // Set current date as start
 
-                // إضافة المهمة للقائمة
-                shortTaskAdapter.addTask(newTask);
+                // If there's a previous task, update its next_task
+                if (previousTask != null) {
+                    previousTask.setNext_task(newTask);
+                }
 
-                // التمرير لأسفل لرؤية المهمة الجديدة
+                // Add task to lists
+                taskList.add(newTask);
+                taskMap.put(taskCounter, newTask);
+                shortTaskAdapter.notifyDataSetChanged();
+
+                // Update spinner options
+                updateSpinnerOptions();
+
+                // Scroll to new task
                 rvTasks.scrollToPosition(taskList.size() - 1);
 
-                // مسح الحقول
+                // Clear fields
                 etTaskName.setText("");
-                etTaskStart.setText("");
                 etTaskDuration.setText("");
+                spinnerTaskStart.setSelection(0);
 
-                // التركيز على حقل اسم المهمة
+                // Focus on task name
                 etTaskName.requestFocus();
 
-                // عرض رسالة نجاح
                 Toast.makeText(AddTaskActivity.this,
                         "✓ تمت إضافة المهمة رقم " + taskCounter,
                         Toast.LENGTH_SHORT).show();
 
                 taskCounter++;
-
-                // تحديث العداد في الـ hint
-                etTaskStart.setHint("Start after task (1-" + (taskCounter-1) + " or none)");
             }
         });
 
@@ -143,152 +173,73 @@ public class AddTaskActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        // إعداد حدث النقر على المهام
-        setupTaskClickListener();
-
-        // تعيين hint أولي
-        etTaskStart.setHint("Start after task (none للبدء مباشرة)");
     }
 
-    private void saveTasks() {
-        if (taskList.isEmpty()) {
-            Toast.makeText(this,
-                    "❗ يرجى إضافة مهمة واحدة على الأقل",
-                    Toast.LENGTH_SHORT).show();
-            return;
+    private void setupSpinner() {
+        // Get tasks without next_task for the same plan from database
+        List<Task> availableTasks = client_task.getTasksWithoutNextTask(planId);
+
+        startOptions.clear();
+        startOptions.add("Start immediately"); // Start without previous task
+
+        // Add tasks from database that don't have next_task
+        for (Task task : availableTasks) {
+            String option = "After Task " + task.getId() + ": " + task.getName();
+            startOptions.add(option);
+            taskMap.put(task.getId(), task);
         }
 
-        // التحقق من الاعتمادية بين المهام
-        boolean valid = validateTaskDependencies();
-        if (!valid) {
-            Toast.makeText(this,
-                    "❌ هناك أخطاء في اعتماديات المهام",
-                    Toast.LENGTH_LONG).show();
-            return;
-        }
+        spinnerAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                startOptions
+        );
 
-        // حفظ المهام (هنا تكتب كود الحفظ الفعلي)
-        saveToDatabase();
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTaskStart.setAdapter(spinnerAdapter);
 
-        // رسالة النجاح
-        Toast.makeText(this,
-                "✅ تم حفظ " + taskList.size() + " مهمة بنجاح",
-                Toast.LENGTH_SHORT).show();
-
-        // إنهاء النشاط
-        finish();
-    }
-
-    private boolean validateTaskDependencies() {
-        for (int i = 0; i < taskList.size(); i++) {
-            Task task = taskList.get(i);
-//            String after = task.startAfterTask;
-            String after="1";
-            if (after != null && !after.equalsIgnoreCase("none")) {
-                try {
-                    int afterNum = Integer.parseInt(after);
-
-                    // التحقق من أن الرقم صحيح
-                    if (afterNum < 1 || afterNum > taskList.size()) {
-                        Toast.makeText(this,
-                                "المهمة " + (i+1) + " تعتمد على مهمة غير موجودة",
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    // التحقق من عدم وجود اعتماديات دائرية
-                    if (hasCircularDependency(i, afterNum - 1)) {
-                        Toast.makeText(this,
-                                "❌ يوجد اعتماد دائري بين المهام",
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                    // لا يمكن أن تعتمد المهمة على نفسها
-                    if (afterNum == (i + 1)) {
-                        Toast.makeText(this,
-                                "❌ المهمة لا يمكن أن تعتمد على نفسها",
-                                Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-
-                } catch (NumberFormatException e) {
-                    Toast.makeText(this,
-                            "❌ قيمة غير صالحة في 'Start after' للمهمة " + (i+1),
-                            Toast.LENGTH_LONG).show();
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean hasCircularDependency(int taskIndex, int dependsOnIndex) {
-        // كشف الاعتمادات الدائرية البسيطة
-        Task dependsOnTask = taskList.get(dependsOnIndex);
-//        String dependsOnValue = dependsOnTask.startAfterTask;
-        String dependsOnValue ="2";
-        if (dependsOnValue != null && !dependsOnValue.equalsIgnoreCase("none")) {
-            try {
-                int nextIndex = Integer.parseInt(dependsOnValue) - 1;
-                if (nextIndex == taskIndex) {
-                    return true; // اعتماد دائري
-                }
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    private void saveToDatabase() {
-        // هنا تكتب كود الحفظ الفعلي
-        // مثال:
-        /*
-        AppDatabase db = AppDatabase.getInstance(this);
-        for (Task task : taskList) {
-            db.taskDao().insertTask(task);
-        }
-        */
-
-        // مؤقتاً: حفظ في SharedPreferences
-        android.content.SharedPreferences prefs = getSharedPreferences("temp_tasks", MODE_PRIVATE);
-        android.content.SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("task_count", taskList.size());
-        for (int i = 0; i < taskList.size(); i++) {
-            Task task = taskList.get(i);
-            editor.putString("task_" + i + "_name", task.getName());
-            editor.putString("task_" + i + "_duration", task.getExpected_duration().toString());
-            editor.putString("task_" + i + "_after", "1");
-        }
-        editor.apply();
-    }
-
-    private void setupTaskClickListener() {
-        shortTaskAdapter.setOnTaskClickListener(new ShortTaskAdapter.OnTaskClickListener() {
+        spinnerTaskStart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onTaskClick(int position, Task task) {
-                // عرض خيارات للمهمة (تحرير/حذف)
-                showTaskOptions(position, task);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Optional: Add any selection logic here
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
             }
         });
     }
 
-    private void showTaskOptions(int position, Task task) {
-        // يمكنك استخدام AlertDialog هنا
-//        Toast.makeText(this,
-//                "المهمة: " + task.taskName + "\n" +
-//                        "المدة: " + task.duration + "\n" +
-//                        "تبدأ بعد: " + task.startAfterTask,
-//                Toast.LENGTH_SHORT).show();
+    private void updateSpinnerOptions() {
+        // Update with tasks from current session that don't have next_task
+        startOptions.clear();
+        startOptions.add("Start immediately");
+
+        for (Task task : taskList) {
+            if (task.getNext_task() == null) {
+                String option = "After Task " + task.getId() + ": " + task.getName();
+                if (!startOptions.contains(option)) {
+                    startOptions.add(option);
+                }
+            }
+        }
+
+        spinnerAdapter.notifyDataSetChanged();
     }
 
-    private void addItemDecoration() {
-        // إضافة مسافة بين العناصر
-        rvTasks.addItemDecoration(new androidx.recyclerview.widget.DividerItemDecoration(
-                this,
-                LinearLayoutManager.VERTICAL
-        ));
+    private void saveTasks() {
+        if (taskList.isEmpty()) {
+            Toast.makeText(this, "❗ يرجى إضافة مهمة واحدة على الأقل", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Save all tasks to database
+        for (Task task : taskList) {
+            client_task.addTask(task);
+        }
+
+        Toast.makeText(this, "✅ تم حفظ " + taskList.size() + " مهمة بنجاح", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

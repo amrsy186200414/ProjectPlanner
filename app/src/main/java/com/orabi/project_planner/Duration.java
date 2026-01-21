@@ -6,7 +6,9 @@ public class Duration {
     int hours;
     int minutes;
 
-    public Duration() {}
+    public Duration() {
+        minutes=0;
+    }
 
     public Duration(int months, int days, int hours, int minutes) {
         this.months = months;

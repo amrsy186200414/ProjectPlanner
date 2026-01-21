@@ -1,8 +1,9 @@
-package com.example.projectplanner;
+package com.orabi.project_planner;
 
 public class User {
     private String Name;
     private int id;
+
     public User(String name){
         this.Name=name;
 

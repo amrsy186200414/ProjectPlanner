@@ -42,33 +42,33 @@ public class MainActivity extends AppCompatActivity {
 //        allPlans.add(new Plan("LEARN ANDROID", "5/10/24", "20/10/24", "completed"));
 //        allPlans.add(new Plan("FITNESS PLAN", "10/10/24", "30/10/24", "in_progress"));
 
-        List<Plan>plans=client_plan.getPlansDetails();
-        for(Plan p:plans)
-        { client_plan.deletePlan(p);}
+//        List<Plan>plans=client_plan.getPlansDetails();
+//        for(Plan p:plans)
+//        { client_plan.deletePlan(p);}
 
-        Plan myplan=new Plan("jjjj SCHOOL", "1/10/24", "in_progress","mydescribtion");
-        myplan.setExpectedEndDate("1/10/24");
-        myplan.setDuration(new Duration(1,1,1,1));
-        Plan myplan2=new Plan("LEARNing ANDROID", "5/10/24", "completed","mydescribtion");
+//        Plan myplan=new Plan("jjjj SCHOOL", "1/10/24", "in_progress","mydescribtion");
+//        myplan.setExpectedEndDate("1/10/24");
+//        myplan.setDuration(new Duration(1,1,1,1));
+//        Plan myplan2=new Plan("LEARNing ANDROID", "5/10/24", "completed","mydescribtion");
 
-        client_plan.addPlan(myplan);
+//        client_plan.addPlan(myplan);
 //        client_plan.addPlan(myplan2);
 
 
         List<Plan> allPlans = client_plan.getPlansDetails();
-        Log.d("DEBUG", "Number of plans: " + allPlans.size());
-        if (allPlans.isEmpty()) {
-            Log.d("DEBUG", "Database is empty!");
-        } else {
-            for (int i = 0; i < allPlans.size(); i++) {
-                Plan p = allPlans.get(i);
-                Log.d("DEBUG", "Plan " + i + ": " +
-                        "ID=" + p.getId() + ", " +
-                        "Title=" + p.getTitle() + ", " +
-                        "Start=" + p.getStartDate() + ", " +
-                        "Status=" + p.getStatus());
-            }
-        }
+//        Log.d("DEBUG", "Number of plans: " + allPlans.size());
+//        if (allPlans.isEmpty()) {
+//            Log.d("DEBUG", "Database is empty!");
+//        } else {
+//            for (int i = 0; i < allPlans.size(); i++) {
+//                Plan p = allPlans.get(i);
+//                Log.d("DEBUG", "Plan " + i + ": " +
+//                        "ID=" + p.getId() + ", " +
+//                        "Title=" + p.getTitle() + ", " +
+//                        "Start=" + p.getStartDate() + ", " +
+//                        "Status=" + p.getStatus());
+//            }
+//        }
 
         RecyclerView rvPlans = findViewById(R.id.rvPlans);
         rvPlans.setLayoutManager(new LinearLayoutManager(this));
