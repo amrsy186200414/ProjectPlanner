@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:paddingTop="40dp">
+
+    <ScrollView
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingBottom="70dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:paddingBottom="80dp">
+
+            <!-- back -->
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/rounded_time_bg"
+                android:src="@drawable/ic_go_back"
+                android:backgroundTint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <!-- ADD -->
+            <TextView
+                android:id="@+id/tvAddTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="ADD "
+                android:textColor="@color/dark_text"
+                android:textSize="30sp"
+                android:fontFamily="@font/koulen"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/btnBack"
+                app:layout_constraintStart_toEndOf="@id/btnBack"
+                app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+            <!-- TASK -->
+            <TextView
+                android:id="@+id/tvAddTaskTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tasks"
+                android:textColor="@color/text_like_background"
+                android:textSize="30sp"
+                android:fontFamily="@font/koulen"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/btnBack"
+                app:layout_constraintStart_toEndOf="@id/tvAddTitle"
+                app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+            <!-- CURRENT PLAN NAME -->
+            <LinearLayout
+                android:id="@+id/LCurrentPlanName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:minHeight="40dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnBack"
+                android:background="@drawable/input_field_bg">
+
+                <TextView
+                    android:id="@+id/tvDurationLabel"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kumbh_sans_light"
+                    android:text="To"
+                    android:textColor="@color/text_like_background"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/tvDurationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kumbh_sans_light"
+
+                    android:text="Hello agin"
+                    android:textColor="@color/dark_text"
+                    android:textSize="25sp"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <!-- ADD TASK TITLE -->
+            <TextView
+                android:id="@+id/labelNewTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="add "
+                android:textColor="@color/dark_text"
+                android:textSize="30sp"
+                android:fontFamily="@font/koulen"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/LCurrentPlanName" />
+
+            <TextView
+                android:id="@+id/labelNewTask_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="task"
+                android:textColor="@color/text_like_background"
+                android:textSize="30sp"
+                android:fontFamily="@font/koulen"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/labelNewTask"
+                app:layout_constraintTop_toTopOf="@id/labelNewTask" />
+
+            <!-- TASK NAME -->
+            <TextView
+                android:id="@+id/labelTaskName"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/kumbh_sans_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TASK NAME"
+                android:textColor="@color/light_gray_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/labelNewTask" />
+
+            <EditText
+                android:id="@+id/etTaskName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/input_field_bg"
+                android:paddingHorizontal="15dp"
+                app:layout_constraintTop_toBottomOf="@id/labelTaskName" />
+
+            <!-- START AFTER -->
+            <TextView
+                android:id="@+id/labelTaskStart"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/kumbh_sans_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TASK Start After"
+                android:textColor="@color/light_gray_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etTaskName" />
+
+            <EditText
+                android:id="@+id/etTaskStrat"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/input_field_bg"
+                android:paddingHorizontal="15dp"
+                app:layout_constraintTop_toBottomOf="@id/labelTaskStart" />
+
+            <!-- DURATION -->
+            <TextView
+                android:id="@+id/labelTaskDuration"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/kumbh_sans_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TASK Duration"
+                android:textColor="@color/light_gray_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/etTaskStrat" />
+
+            <EditText
+                android:id="@+id/etTaskDuration"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/input_field_bg"
+                android:paddingHorizontal="15dp"
+                app:layout_constraintTop_toBottomOf="@id/labelTaskDuration" />
+
+            <!-- ADD BUTTON -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAddPreview"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_button_bg"
+                android:text="ADD"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/etTaskDuration"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- ALL TASKS -->
+            <TextView
+                android:id="@+id/labelAllTasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="ALL "
+                android:textColor="@color/dark_text"
+                android:textSize="30sp"
+                android:fontFamily="@font/koulen"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnAddPreview" />
+
+            <TextView
+                android:id="@+id/labelAllTasks_tasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tasks"
+                android:textColor="@color/text_like_background"
+                android:textSize="30sp"
+                android:fontFamily="@font/koulen"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/labelAllTasks"
+                app:layout_constraintTop_toBottomOf="@id/btnAddPreview" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvTasks"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@id/labelAllTasks_tasks"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                 />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- SAVE PLAN -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSavePlan"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/rounded_time_bg"
+        android:text="Save Chnges"
+        android:textColor="@color/app_background"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:elevation="8dp" />
+
+</FrameLayout>
