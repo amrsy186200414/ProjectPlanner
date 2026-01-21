@@ -20,6 +20,7 @@ public class Plan {
         this.expectedEndDate = "";
         this.status = "";
         this.describtion = "";
+        duration=new Duration();
     }
 
     // Constructor with ID
@@ -30,6 +31,8 @@ public class Plan {
         this.status = status;
         this.describtion = description;
         this.expectedEndDate = "";
+        duration=new Duration();
+
     }
 
     // Constructor without ID (for new plans)
@@ -39,6 +42,8 @@ public class Plan {
         this.status = status;
         this.describtion = description;
         this.expectedEndDate = "";
+        duration=new Duration();
+
     }
 
     // Getters and Setters

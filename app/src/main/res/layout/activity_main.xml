@@ -73,6 +73,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvYourPlans">
 
         <TextView
+            android:id="@+id/filterAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -85,6 +86,8 @@
             android:textColor="@color/white" />
 
         <TextView
+            android:id="@+id/filterInProgress"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="in progress"
@@ -96,6 +99,8 @@
             android:layout_marginEnd="8dp"/>
 
         <TextView
+            android:id="@+id/filterWaiting"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="On Hold"
