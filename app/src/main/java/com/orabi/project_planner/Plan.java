@@ -8,14 +8,14 @@ import java.util.List;
 
 public class Plan {
     private int id;
-    private String endDate; // Add this field
+    private String endDate;
 
     private String title;
     private String startDate;
     private String expectedEndDate;
     private String status;
     private String describtion;
-    private Duration duration; // Use lowercase 'd'
+    private Duration duration;
 
     // Empty constructor
     public Plan() {
@@ -41,7 +41,6 @@ public class Plan {
 
     }
 
-    // Constructor without ID (for new plans)
     public Plan(String title, String startDate, String status, String description) {
         this.title = title;
         this.startDate = startDate;
@@ -51,7 +50,6 @@ public class Plan {
         duration=new Duration();
 
     }
-    // In Plan.java, add this method
     public boolean isAllTasksCompleted(List<Task> tasks) {
         if (tasks == null || tasks.isEmpty()) {
             return false;
@@ -66,7 +64,7 @@ public class Plan {
     }
     public String getEndDate() { return endDate; }
     public void setEndDate(String endDate) { this.endDate = endDate; }
-    // Getters and Setters
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

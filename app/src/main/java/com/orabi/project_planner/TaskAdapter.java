@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
@@ -17,13 +18,25 @@ import java.util.Locale;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
     private List<Task> taskList;
     private Context context;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy, hh:mm a", Locale.getDefault());
+    private SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
     private DBHelperTask dbHelperTask;
 
-    public TaskAdapter(List<Task> taskList, Context context) {
+    private int currentPlanId; // معرف الخطة الحالية
+    private OnAllTasksCompletedListener tasksCompletedListener;
+
+    public TaskAdapter(List<Task> taskList, Context context, int planId) {
         this.taskList = taskList;
         this.context = context;
         this.dbHelperTask = new DBHelperTask(context);
+        this.currentPlanId = planId; // تخزين معرف الخطة
+    }
+
+    public interface OnAllTasksCompletedListener {
+        void onAllTasksCompleted(int planId);
+    }
+
+    public void setOnAllTasksCompletedListener(OnAllTasksCompletedListener listener) {
+        this.tasksCompletedListener = listener;
     }
 
     public void updateTasks(List<Task> newList) {
@@ -38,42 +51,50 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(view);
     }
 
+    private String formatDateToYYYYMMDDHHMM(Date date) {
+        if (date == null) {
+            return "--";
+        }
+        try {
+            return dateTimeFormat.format(date);
+        } catch (Exception e) {
+            return "--";
+        }
+    }
+
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
 
-        // Set basic info
         holder.tvTaskNumber.setText(String.valueOf(position + 1));
         holder.tvTaskName.setText(task.getName());
 
-        // Set duration
         if (task.getExpected_duration() != null) {
             holder.tvDurationValue.setText(task.getExpected_duration().toString());
         } else {
             holder.tvDurationValue.setText("N/A");
         }
 
-        // Set start date
         if (task.getStart_date() != null) {
-            holder.tvStartDateValue.setText(dateFormat.format(task.getStart_date()));
+            String formattedStartDate = formatDateToYYYYMMDDHHMM(task.getStart_date());
+            holder.tvStartDateValue.setText(formattedStartDate);
         } else {
             holder.tvStartDateValue.setText("Not started");
         }
 
-        // Calculate expected end date
         if (task.getStart_date() != null && task.getExpected_duration() != null) {
             long endTime = task.getStart_date().getTime() + task.getExpected_duration().toMillis();
-            holder.tvExpectedEndValue.setText(dateFormat.format(new Date(endTime)));
+            Date endDate = new Date(endTime);
+            String formattedEndDate = formatDateToYYYYMMDDHHMM(endDate);
+            holder.tvExpectedEndValue.setText(formattedEndDate);
         } else {
             holder.tvExpectedEndValue.setText("N/A");
         }
 
-        // Set status
         String status = task.getStatus();
-        holder.tvStatusValue.setText(status != null ? status : "Waiting");
+        String statusText = status != null ? status : "Waiting";
+        holder.tvStatusValue.setText(statusText);
 
-        // Task 1: Make button unclickable when status is "Waiting"
-        // Task 3: When clicking "End" button, end current task and start next task
         if ("completed".equals(status)) {
             holder.btnAction.setText("Completed");
             holder.btnAction.setEnabled(false);
@@ -83,10 +104,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.tvStatusValue.setTextColor(Color.parseColor("#4CAF50"));
             holder.tvTimeRemainingBadge.setText("");
 
-            // Display end date if available
             if (task.getEndDate() != null) {
-                holder.tvStatusValue.setText("Ended: " + dateFormat.format(task.getEndDate()));
+                String formattedEndDate = formatDateToYYYYMMDDHHMM(task.getEndDate());
+                holder.tvStatusValue.setText("Ended: " + formattedEndDate);
+            } else {
+                holder.tvStatusValue.setText("Completed");
             }
+
         } else if ("in_progress".equals(status)) {
             holder.btnAction.setText("End");
             holder.btnAction.setEnabled(true);
@@ -95,7 +119,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.indicator.setBackgroundColor(Color.parseColor("#FFC107"));
             holder.tvStatusValue.setTextColor(Color.parseColor("#FFC107"));
 
-            // Calculate remaining time
             if (task.getStart_date() != null && task.getExpected_duration() != null) {
                 long currentTime = System.currentTimeMillis();
                 long startTime = task.getStart_date().getTime();
@@ -116,7 +139,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             }
         } else { // Waiting status
             holder.btnAction.setText("Waiting");
-            holder.btnAction.setEnabled(false); // Task 1: Make unclickable
+            holder.btnAction.setEnabled(false);
             holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg_disabled);
             holder.btnAction.setAlpha(0.5f);
             holder.indicator.setBackgroundColor(Color.parseColor("#757575"));
@@ -124,7 +147,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.tvTimeRemainingBadge.setText("");
         }
 
-        // Set click listener for action button
         holder.btnAction.setOnClickListener(v -> {
             if ("End".equals(holder.btnAction.getText().toString())) {
                 endTask(task);
@@ -132,25 +154,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         });
     }
 
-    private void startTask(Task task) {
-        // Task 2: Check if previous task is null or completed
-        if (task.getPrevious_task() == null ||
-                (task.getPrevious_task() != null && "completed".equals(task.getPrevious_task().getStatus()))) {
-            task.setStart_date(new Date());
-            task.setStatus("in_progress");
-            dbHelperTask.updateTaskDetails(task);
-            notifyDataSetChanged();
-        }
-    }
-
     private void endTask(Task task) {
-        // Task 3: End current task and start next task automatically
-        // Set end date (Task 6)
         task.setEndDate(new Date());
         task.setStatus("completed");
         dbHelperTask.updateTaskDetails(task);
 
-        // Start next task if exists
         if (task.getNext_task() != null) {
             Task nextTask = dbHelperTask.getTaskById(task.getNext_task().getId());
             if (nextTask != null && "Waiting".equals(nextTask.getStatus())) {
@@ -160,7 +168,51 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             }
         }
 
+        checkIfAllTasksCompleted();
+
         notifyDataSetChanged();
+    }
+
+    private void checkIfAllTasksCompleted() {
+        List<Task> allPlanTasks = dbHelperTask.getTasksByPlanId(currentPlanId);
+
+        if (allPlanTasks.isEmpty()) {
+            return;
+        }
+
+        boolean allCompleted = true;
+        for (Task task : allPlanTasks) {
+            if (!"completed".equals(task.getStatus())) {
+                allCompleted = false;
+                break;
+            }
+        }
+
+        if (allCompleted) {
+            updatePlanStatusToCompleted();
+
+            if (tasksCompletedListener != null) {
+                tasksCompletedListener.onAllTasksCompleted(currentPlanId);
+            }
+
+            showCompletionMessage();
+        }
+    }
+
+    private void updatePlanStatusToCompleted() {
+        DBHelperPlan dbHelperPlan = new DBHelperPlan(context);
+        Plan plan = dbHelperPlan.getPlanByID(currentPlanId);
+
+        if (plan != null && !"completed".equals(plan.getStatus())) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            plan.setEndDate(sdf.format(new Date()));
+            plan.setStatus("completed");
+            dbHelperPlan.updateStudentDetails(plan);
+        }
+    }
+
+    private void showCompletionMessage() {
+        Toast.makeText(context, "🎉 تم إكمال جميع مهام الخطة!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

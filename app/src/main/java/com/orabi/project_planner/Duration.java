@@ -33,7 +33,6 @@ public class Duration {
     public void setMinutes(int minutes) { this.minutes = minutes; }
 
     public long toMillis() {
-        // Approximate conversions
         long totalMinutes = minutes;
         totalMinutes += hours * 60;
         totalMinutes += days * 24 * 60;
@@ -42,7 +41,6 @@ public class Duration {
     }
 
     public long toMinutes() {
-        // Approximate conversions
         long totalMinutes = minutes;
         totalMinutes += hours * 60;
         totalMinutes += days * 24 * 60;
@@ -50,17 +48,14 @@ public class Duration {
         return totalMinutes;
     }
 
-    // ADD THIS METHOD: Convert milliseconds to Duration
     public static Duration fromMillis(long millis) {
         long totalSeconds = millis / 1000;
         long totalMinutes = totalSeconds / 60;
 
-        // Call the existing fromMinutes method
         return fromMinutes((int) totalMinutes);
     }
 
     public static Duration fromMinutes(int minutes) {
-        // Approximate conversions
         int months = minutes / (30 * 24 * 60);
         int days = (minutes - months * (30 * 24 * 60)) / (24 * 60);
         int hours = (minutes - months * (30 * 24 * 60) - days * (24 * 60)) / 60;
@@ -69,7 +64,6 @@ public class Duration {
         return new Duration(months, days, hours, minutes_still);
     }
 
-    // ADD THIS METHOD: Convert string representation to Duration
 
     @Override
     public String toString() {
@@ -81,7 +75,6 @@ public class Duration {
         return sb.toString().trim();
     }
 
-    // Static method to parse from string
     public static Duration fromString(String durationStr) {
         if (durationStr == null || durationStr.isEmpty()) {
             return new Duration(0, 0, 0, 0);
@@ -108,7 +101,6 @@ public class Duration {
         this.days += other.days;
         this.months += other.months;
 
-        // Normalize
         if (this.minutes >= 60) {
             this.hours += this.minutes / 60;
             this.minutes = this.minutes % 60;

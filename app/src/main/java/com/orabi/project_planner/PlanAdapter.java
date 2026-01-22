@@ -64,45 +64,183 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
 
         return sb.toString();
     }
+    private String calculateExpectedEndDate(String startDate, Duration duration) {
+        if (startDate == null || startDate.isEmpty() || duration == null) {
+            return "--";
+        }
 
+        try {
+            SimpleDateFormat inputFormat;
+
+            if (startDate.contains("/")) {
+                if (startDate.length() == 10) { // dd/MM/yyyy
+                    inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                } else if (startDate.length() == 8) { // dd/MM/yy
+                    inputFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+                } else {
+                    inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                }
+            } else if (startDate.contains("-")) {
+                inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            } else {
+                return "Invalid Date";
+            }
+
+            Date start = inputFormat.parse(startDate);
+            if (start == null) {
+                return "--";
+            }
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(start);
+
+            calendar.add(Calendar.MONTH, duration.getMonths());
+            calendar.add(Calendar.DAY_OF_MONTH, duration.getDays());
+            calendar.add(Calendar.HOUR_OF_DAY, duration.getHours());
+            calendar.add(Calendar.MINUTE, duration.getMinutes());
+
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+            return outputFormat.format(calendar.getTime());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "--";
+        }
+    }
+
+    private String formatDateToYYYYMMDD(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty() || dateStr.equals("--")) {
+            return "--";
+        }
+
+        try {
+            Date date = null;
+
+            String[] possibleFormats = {
+                    "dd/MM/yyyy",
+                    "dd/MM/yy",
+                    "yyyy-MM-dd",
+                    "MM/dd/yyyy",
+                    "dd-MM-yyyy",
+                    "dd MMM yyyy",
+                    "dd MMM",
+                    "MMM dd",
+                    "yyyy/MM/dd"
+            };
+
+            for (String format : possibleFormats) {
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+                    date = sdf.parse(dateStr);
+                    if (date != null) break;
+                } catch (Exception e) {
+                }
+            }
+
+            if (date == null) {
+                if (dateStr.matches(".*\\d+.*")) {
+                    try {
+                        if (dateStr.contains("/")) {
+                            String[] parts = dateStr.split("/");
+                            if (parts.length >= 3) {
+                                int year = Integer.parseInt(parts[2]);
+                                if (year < 100) {
+                                    year += 2000;
+                                }
+                                dateStr = year + "-" + parts[1] + "-" + parts[0];
+                                return dateStr;
+                            }
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                return dateStr;
+            }
+
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            return outputFormat.format(date);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dateStr;
+        }
+    }
+
+    private String calculateExpectedEndDateYYYYMMDD(String startDate, Duration duration) {
+        if (startDate == null || startDate.isEmpty() || duration == null) {
+            return "--";
+        }
+
+        try {
+            String formattedStartDate = formatDateToYYYYMMDD(startDate);
+            if (formattedStartDate.equals("--") || formattedStartDate.equals(startDate)) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date start;
+                try {
+                    start = sdf.parse(startDate);
+                } catch (Exception e) {
+                    sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    start = sdf.parse(startDate);
+                }
+
+                if (start == null) return "--";
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(start);
+
+                calendar.add(Calendar.MONTH, duration.getMonths());
+                calendar.add(Calendar.DAY_OF_MONTH, duration.getDays());
+                calendar.add(Calendar.HOUR_OF_DAY, duration.getHours());
+                calendar.add(Calendar.MINUTE, duration.getMinutes());
+
+                return sdf.format(calendar.getTime());
+            }
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date start = sdf.parse(formattedStartDate);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(start);
+
+            calendar.add(Calendar.MONTH, duration.getMonths());
+            calendar.add(Calendar.DAY_OF_MONTH, duration.getDays());
+            calendar.add(Calendar.HOUR_OF_DAY, duration.getHours());
+            calendar.add(Calendar.MINUTE, duration.getMinutes());
+
+            return sdf.format(calendar.getTime());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "--";
+        }
+    }
     @Override
     public void onBindViewHolder(@NonNull PlanViewHolder holder, int position) {
         Plan plan = planList.get(position);
 
-        // Store holder reference for timer updates
         viewHolders.put(plan.getId(), holder);
 
-        // Set basic info
         holder.tvTitle.setText(plan.getTitle());
-        holder.tvStartValue.setText(plan.getStartDate());
 
-        // Calculate expected end date if not already set
-        if (plan.getExpectedEndDate() == null || plan.getExpectedEndDate().isEmpty()) {
-            calculateAndSetExpectedEndDate(plan);
-        }
+        String formattedStartDate = formatDateToYYYYMMDD(plan.getStartDate());
+        holder.tvStartValue.setText(formattedStartDate);
 
-        holder.tvExpectedEndValue.setText(plan.getExpectedEndDate());
-        // Set basic info
-        holder.tvTitle.setText(plan.getTitle());
-        holder.tvStartValue.setText(plan.getStartDate());
-        holder.tvExpectedEndValue.setText(plan.getExpectedEndDate());
+        String expectedEndDate = calculateExpectedEndDateYYYYMMDD(plan.getStartDate(), plan.getDuration());
+        holder.tvExpectedEndValue.setText(expectedEndDate);
 
-        // Display end date if available
         if (plan.getEndDate() != null && !plan.getEndDate().isEmpty()) {
-            holder.tvEndValue.setText(plan.getEndDate());
+            String formattedEndDate = formatDateToYYYYMMDD(plan.getEndDate());
+            holder.tvEndValue.setText(formattedEndDate);
         } else {
             holder.tvEndValue.setText("--");
         }
 
-        // Set duration
         if (plan.getDuration() != null) {
-            holder.tvDurationValue.setText(plan.getDuration().toString());
+            holder.tvDurationValue.setText(formatDurationForPlanItem(plan.getDuration()));
         } else {
             holder.tvDurationValue.setText("Not set");
         }
 
-
-        // Set button text based on status
         if ("in_progress".equals(plan.getStatus())) {
             holder.btnStart.setText("In Progress");
             holder.btnStart.setEnabled(false);
@@ -117,10 +255,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             holder.btnStart.setBackgroundResource(R.drawable.rounded_button_bg);
         }
 
-        // Calculate and display time remaining for in_progress plans
         updatePlanTimeRemaining(holder, plan);
 
-        // Set status color
         int colorRes;
         switch (plan.getStatus()) {
             case "completed":
@@ -138,7 +274,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         }
         holder.statusIndicator.setBackgroundColor(ContextCompat.getColor(context, colorRes));
 
-        // Set click listeners
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, PlanDetailsActivity.class);
             intent.putExtra("PLAN_ID", plan.getId());
@@ -179,7 +314,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
                 holder.tvTimeRemaining.setText(plan.getDuration() != null ? formatDuration(plan.getDuration()) : "Not set");
             }
         } else {
-            // For plans not in progress, show total duration
             holder.tvTimeRemaining.setText(plan.getDuration() != null ? formatDuration(plan.getDuration()) : "Not set");
             holder.tvTimeRemaining.setTextColor(ContextCompat.getColor(context, R.color.secondary_text));
         }
@@ -236,7 +370,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         DBHelperPlan dbHelper = new DBHelperPlan(context);
         DBHelperTask dbHelperTask = new DBHelperTask(context);
 
-        // Update plan start date
         Plan plan = dbHelper.getPlanByID(planId);
         if (plan != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -244,7 +377,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
             plan.setStatus("in_progress");
             dbHelper.updateStudentDetails(plan);
 
-            // Start tasks without previous tasks
             List<Task> tasks = dbHelperTask.getTasksByPlanId(planId);
             for (Task task : tasks) {
                 if (task.getPrevious_task() == null || task.getPrevious_task().getId() == -1) {
@@ -254,7 +386,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
                 }
             }
 
-            // Refresh the list
             if (context instanceof MainActivity) {
                 ((MainActivity) context).onResume();
             }
@@ -331,7 +462,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(startDate);
 
-                    // Add duration
                     Duration duration = plan.getDuration();
                     calendar.add(Calendar.MONTH, duration.getMonths());
                     calendar.add(Calendar.DAY_OF_MONTH, duration.getDays());
@@ -339,7 +469,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
                     String expectedEndDate = sdf.format(calendar.getTime());
                     plan.setExpectedEndDate(expectedEndDate);
 
-                    // Update in database
                     DBHelperPlan dbHelper = new DBHelperPlan(context);
                     dbHelper.updateStudentDetails(plan);
                 }
