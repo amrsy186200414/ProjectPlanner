@@ -71,29 +71,22 @@ public class ShortTaskAdapter extends RecyclerView.Adapter<ShortTaskAdapter.Shor
         public ShortTaskViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            // ربط العناصر حسب IDs الموجودة في XML
             cardView = (CardView) itemView;
             tvTaskNumber = itemView.findViewById(R.id.tvTaskNumber);
             tvTaskDash = itemView.findViewById(R.id.tvTaskDash);
             tvTaskName = itemView.findViewById(R.id.tvTaskName);
             tvDuration = itemView.findViewById(R.id.tvDuration);
             tvDurationValue = itemView.findViewById(R.id.tvDurationValue);
-//            tvStartAfter = itemView.findViewById(R.id.tvStartAfterValue);
             tvStartAfterValue = itemView.findViewById(R.id.tvStartAfterValue);
 
-            // ملاحظة: الـ CardView ليس له id في XML، لذا إما:
-            // 1. أضف android:id="@+id/cardView" في XML
-            // 2. أو استخدم: cardView = (CardView) itemView
         }
     }
 
-    // دالة لإضافة مهمة جديدة
     public void addTask(Task task) {
         taskList.add(task);
         notifyItemInserted(taskList.size() - 1);
     }
 
-    // دالة لإزالة مهمة
     public void removeTask(int position) {
         if (position >= 0 && position < taskList.size()) {
             taskList.remove(position);
@@ -102,19 +95,16 @@ public class ShortTaskAdapter extends RecyclerView.Adapter<ShortTaskAdapter.Shor
         }
     }
 
-    // دالة لتحديث جميع البيانات
     public void updateTaskList(List<Task> newList) {
         taskList.clear();
         taskList.addAll(newList);
         notifyDataSetChanged();
     }
 
-    // دالة للحصول على المهام
     public List<Task> getTaskList() {
         return taskList;
     }
 
-    // Interface للنقر على المهام
     public interface OnTaskClickListener {
         void onTaskClick(int position, Task task);
     }

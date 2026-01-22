@@ -57,23 +57,19 @@ public class AddTaskActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize database helpers
         client_task = new DBHelperTask(this);
         dbHelperPlan = new DBHelperPlan(this);
 
-        // Check if plan is done
         Plan plan = dbHelperPlan.getPlanByID(planId);
         if (plan != null && "done".equals(plan.getStatus())) {
-            // Show message and finish activity
             Toast.makeText(this, "❌ لا يمكن إضافة مهام لخطة مكتملة", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        // Initialize taskCounter based on existing tasks
         initializeTaskCounter();
 
-        // ربط العناصر
+
         ImageButton btnBack = findViewById(R.id.btnBack);
         Button btnSavePlan = findViewById(R.id.btnSavePlan);
         Button btnAddPreview = findViewById(R.id.btnAddPreview);
@@ -81,7 +77,6 @@ public class AddTaskActivity extends AppCompatActivity {
         EditText etTaskDuration = findViewById(R.id.etTaskDuration);
         tvDurationExample = findViewById(R.id.tvDurationExample);
 
-        // Spinner
         spinnerTaskStart = findViewById(R.id.etTaskStrat);
 
         // RecyclerView
@@ -90,17 +85,13 @@ public class AddTaskActivity extends AppCompatActivity {
         shortTaskAdapter = new ShortTaskAdapter(taskList);
         rvTasks.setAdapter(shortTaskAdapter);
 
-        // إعداد Spinner
         setupSpinner();
 
-        // Setup duration input validation and examples
         setupDurationInput(etTaskDuration);
 
-        // ===== زر ADD (إضافة مهمة جديدة) =====
         btnAddPreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Check if plan is done
                 Plan currentPlan = dbHelperPlan.getPlanByID(planId);
                 if (currentPlan != null && "done".equals(currentPlan.getStatus())) {
                     Toast.makeText(AddTaskActivity.this,
@@ -124,7 +115,6 @@ public class AddTaskActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Parse and validate duration
                 Duration duration = parseDuration(durationStr);
                 if (duration == null) {
                     etTaskDuration.setError("مدة غير صحيحة. مثال: 2d أو 3h 30m أو 1mo 5d");
@@ -132,7 +122,6 @@ public class AddTaskActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Check if duration is valid (at least 1 minute)
                 if (duration.getMonths() == 0 && duration.getDays() == 0 &&
                         duration.getHours() == 0 && duration.getMinutes() == 0) {
                     etTaskDuration.setError("المدة يجب أن تكون على الأقل دقيقة واحدة");
@@ -140,23 +129,19 @@ public class AddTaskActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Get selected previous task from spinner
                 String selectedOption = spinnerTaskStart.getSelectedItem().toString();
                 Task previousTask = null;
                 int previousTaskId = -1;
 
                 if (!selectedOption.equals("Start immediately")) {
                     try {
-                        // Extract task ID from option like "After Task 1: Task Name"
                         String[] parts = selectedOption.split(":");
                         if (parts.length > 0) {
                             String firstPart = parts[0].trim(); // "After Task 1"
                             String numStr = firstPart.replaceAll("[^0-9]", "");
                             previousTaskId = Integer.parseInt(numStr);
 
-                            // Find the previous task
                             if (previousTaskId > 0) {
-                                // First check in local taskList
                                 for (Task task : taskList) {
                                     if (task.getId() == previousTaskId) {
                                         previousTask = task;
@@ -164,14 +149,12 @@ public class AddTaskActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                // If not found in local list, check in database
                                 if (previousTask == null) {
                                     previousTask = client_task.getTaskById(previousTaskId);
                                 }
                             }
                         }
                     } catch (NumberFormatException e) {
-                        // If parsing fails, keep as null
                         Toast.makeText(AddTaskActivity.this,
                                 "خطأ في تحرقم المهمة السابقة", Toast.LENGTH_SHORT).show();
                     }
@@ -183,17 +166,14 @@ public class AddTaskActivity extends AppCompatActivity {
                 newTask.setName(taskName);
                 newTask.setExpected_duration(duration);
                 newTask.setPlanid(planId);
-                newTask.setStart_date(null); // Not started yet - will be set when task actually starts
+                newTask.setStart_date(null);
                 newTask.setStatus("Waiting");
 
-                // Set previous_task relationship
                 if (previousTask != null) {
                     newTask.setPrevious_task(previousTask);
 
-                    // Set the next_task of the previous task to this new task
                     previousTask.setNext_task(newTask);
 
-                    // Update the previous task in the list if it exists
                     for (int i = 0; i < taskList.size(); i++) {
                         if (taskList.get(i).getId() == previousTask.getId()) {
                             taskList.set(i, previousTask);
@@ -211,39 +191,31 @@ public class AddTaskActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }
 
-                // Add task to lists
                 taskList.add(newTask);
                 taskMap.put(taskCounter, newTask);
                 shortTaskAdapter.notifyDataSetChanged();
 
-                // ===== CALCULATE AND UPDATE PLAN DURATION AFTER ADDING TASK =====
                 calculateAndUpdatePlanDuration();
 
-                // Update spinner options
                 updateSpinnerOptions();
 
-                // Scroll to new task
                 rvTasks.scrollToPosition(taskList.size() - 1);
 
-                // Clear fields
                 etTaskName.setText("");
                 etTaskDuration.setText("");
                 spinnerTaskStart.setSelection(0);
 
-                // Show formatted duration in toast
                 String formattedDuration = formatDurationForDisplay(duration);
                 Toast.makeText(AddTaskActivity.this,
                         "✓ تمت إضافة المهمة رقم " + taskCounter + " (المدة: " + formattedDuration + ")",
                         Toast.LENGTH_LONG).show();
 
-                // Focus on task name
                 etTaskName.requestFocus();
 
                 taskCounter++;
             }
         });
 
-        // ===== زر Save Changes (حفظ والخروج) =====
         btnSavePlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,7 +223,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
 
-        // ===== زر Back (رجوع دون حفظ) =====
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -266,7 +237,6 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void setupDurationInput(EditText etTaskDuration) {
-        // Add TextWatcher for real-time validation
         etTaskDuration.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -295,7 +265,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         });
 
-        // Set initial example
         tvDurationExample.setText("أمثلة: 2d, 3h 30m, 1mo 5d, 45m");
         tvDurationExample.setTextColor(getResources().getColor(R.color.secondary_text));
     }
@@ -311,7 +280,6 @@ public class AddTaskActivity extends AppCompatActivity {
 
         String input = durationStr.trim().toLowerCase();
 
-        // Try pattern matching first
         java.util.regex.Matcher matcher = DURATION_PATTERN.matcher(input);
         if (matcher.matches()) {
             try {
@@ -334,21 +302,17 @@ public class AddTaskActivity extends AppCompatActivity {
                     return new Duration(months, days, hours, minutes);
                 }
             } catch (NumberFormatException e) {
-                // Continue to fallback parsing
             }
         }
 
-        // Fallback: simple parsing for common formats
         try {
             int months = 0, days = 0, hours = 0, minutes = 0;
 
-            // Split by spaces
             String[] parts = input.split("\\s+");
 
             for (String part : parts) {
                 if (part.isEmpty()) continue;
 
-                // Extract number and unit
                 String numStr = part.replaceAll("[^0-9]", "");
                 String unit = part.replaceAll("[0-9]", "").toLowerCase();
 
@@ -365,12 +329,10 @@ public class AddTaskActivity extends AppCompatActivity {
                 } else if (unit.contains("m") && !unit.contains("mo")) {
                     minutes = value;
                 } else if (unit.isEmpty()) {
-                    // Default to days if no unit specified (for backward compatibility)
                     days = value;
                 }
             }
 
-            // Validate at least one non-zero value
             if (months > 0 || days > 0 || hours > 0 || minutes > 0) {
                 return new Duration(months, days, hours, minutes);
             }
@@ -382,10 +344,9 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void initializeTaskCounter() {
-        // Get existing tasks from database to determine next task ID
         List<Task> existingTasks = client_task.getTasksByPlanId(planId);
         if (!existingTasks.isEmpty()) {
-            // Find the maximum task ID
+
             int maxId = 0;
             for (Task task : existingTasks) {
                 if (task.getId() > maxId) {
@@ -402,20 +363,16 @@ public class AddTaskActivity extends AppCompatActivity {
     private void setupSpinner() {
         // Clear previous options
         startOptions.clear();
-        startOptions.add("Start immediately"); // Start without previous task
+        startOptions.add("Start immediately");
 
-        // Get tasks without next_task for the same plan from database
         List<Task> availableTasks = client_task.getTasksWithoutNextTask(planId);
 
-        // Add tasks from database that don't have next_task
         for (Task task : availableTasks) {
             String option = "After Task " + task.getId() + ": " + task.getName();
             startOptions.add(option);
-            // Store in map for quick lookup
             taskMap.put(task.getId(), task);
         }
 
-        // Also add tasks from current session that don't have next_task
         for (Task task : taskList) {
             if (task.getNext_task() == null) {
                 String option = "After Task " + task.getId() + ": " + task.getName();
@@ -447,17 +404,14 @@ public class AddTaskActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
             }
         });
     }
 
     private void updateSpinnerOptions() {
-        // Update with tasks from current session that don't have next_task
         List<String> newOptions = new ArrayList<>();
         newOptions.add("Start immediately");
 
-        // Add all tasks that don't have a next_task
         for (Task task : taskList) {
             if (task.getNext_task() == null) {
                 String option = "After Task " + task.getId() + ": " + task.getName();
@@ -467,7 +421,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         }
 
-        // Also check database for tasks without next_task
         List<Task> dbTasks = client_task.getTasksWithoutNextTask(planId);
         for (Task task : dbTasks) {
             String option = "After Task " + task.getId() + ": " + task.getName();
@@ -476,7 +429,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         }
 
-        // Update the adapter
         startOptions.clear();
         startOptions.addAll(newOptions);
         spinnerAdapter.notifyDataSetChanged();
@@ -488,16 +440,13 @@ public class AddTaskActivity extends AppCompatActivity {
      */
     private void calculateAndUpdatePlanDuration() {
         try {
-            // Combine tasks from database and local list
             List<Task> allTasks = new ArrayList<>();
 
-            // Add tasks from database
             List<Task> dbTasks = client_task.getTasksByPlanId(planId);
             allTasks.addAll(dbTasks);
 
-            // Add tasks from local list (not yet saved)
             for (Task localTask : taskList) {
-                // Check if task already exists in database tasks
+
                 boolean existsInDb = false;
                 for (Task dbTask : dbTasks) {
                     if (dbTask.getId() == localTask.getId()) {
@@ -512,16 +461,13 @@ public class AddTaskActivity extends AppCompatActivity {
 
             Log.d(TAG, "Calculating plan duration from " + allTasks.size() + " tasks");
 
-            // Calculate max chain duration
             Duration planDuration = calculateMaxChainDuration(allTasks);
             String durationText = formatDurationForDisplay(planDuration);
 
             Log.d(TAG, "Calculated plan duration: " + durationText);
 
-            // Update ONLY the duration in database, not the entire plan
             updatePlanDurationOnly(planDuration);
 
-            // Show feedback to user
             Toast.makeText(this, "✓ مدة الخطة: " + durationText, Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
@@ -561,13 +507,11 @@ public class AddTaskActivity extends AppCompatActivity {
             return new Duration(0, 0, 0, 0);
         }
 
-        // Create a map for quick task lookup by ID
         Map<Integer, Task> taskMap = new HashMap<>();
         for (Task task : tasks) {
             taskMap.put(task.getId(), task);
         }
 
-        // Find all starting tasks (tasks without previous tasks)
         List<Task> startingTasks = new ArrayList<>();
         for (Task task : tasks) {
             if (task.getPrevious_task() == null ||
@@ -578,7 +522,6 @@ public class AddTaskActivity extends AppCompatActivity {
             }
         }
 
-        // If no clear starting tasks, assume all tasks are independent
         if (startingTasks.isEmpty()) {
             startingTasks.addAll(tasks);
             Log.d(TAG, "No starting tasks found, using all tasks as independent");
@@ -586,7 +529,6 @@ public class AddTaskActivity extends AppCompatActivity {
 
         Log.d(TAG, "Found " + startingTasks.size() + " starting tasks");
 
-        // Calculate duration for each chain and find the maximum
         Duration maxDuration = new Duration(0, 0, 0, 0);
 
         for (Task startTask : startingTasks) {
@@ -599,7 +541,6 @@ public class AddTaskActivity extends AppCompatActivity {
             // Follow the chain
             while (current != null) {
                 chainLength++;
-                // Add current task's duration
                 if (current.getExpected_duration() != null) {
                     chainDuration.add(current.getExpected_duration());
                     Log.d(TAG, "  Adding task " + current.getId() + " duration: " +
@@ -607,13 +548,12 @@ public class AddTaskActivity extends AppCompatActivity {
                             "Chain total so far: " + chainDuration.getDays() + "d");
                 }
 
-                // Move to next task if exists
                 if (current.getNext_task() != null &&
                         current.getNext_task().getId() > 0 &&
                         taskMap.containsKey(current.getNext_task().getId())) {
                     current = taskMap.get(current.getNext_task().getId());
                 } else {
-                    current = null; // End of chain
+                    current = null;
                 }
             }
 
@@ -660,7 +600,6 @@ public class AddTaskActivity extends AppCompatActivity {
             sb.append(duration.getMinutes()).append("m");
         }
 
-        // If all are zero, show 0 minutes
         if (sb.length() == 0) {
             sb.append("0m");
         }
@@ -669,7 +608,6 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void saveTasks() {
-        // Double-check plan is not done
         Plan planCheck = dbHelperPlan.getPlanByID(planId);
         if (planCheck != null && "done".equals(planCheck.getStatus())) {
             Toast.makeText(this, "❌ لا يمكن إضافة مهام لخطة مكتملة", Toast.LENGTH_LONG).show();
@@ -684,7 +622,6 @@ public class AddTaskActivity extends AppCompatActivity {
 
         Log.d(TAG, "Saving " + taskList.size() + " tasks to database");
 
-        // Save all tasks to database
         for (Task task : taskList) {
             Log.d(TAG, "Saving task: ID=" + task.getId() + ", Name=" + task.getName() +
                     ", PreviousTask=" + (task.getPrevious_task() != null ? task.getPrevious_task().getId() : "null") +
@@ -692,13 +629,10 @@ public class AddTaskActivity extends AppCompatActivity {
 
             long taskId = client_task.addTask(task);
             if (taskId != -1) {
-                // Update the task ID with the one from database
                 task.setId((int) taskId);
                 Log.d(TAG, "Task saved with database ID: " + taskId);
 
-                // If this task has a previous task, update the relationship in database
                 if (task.getPrevious_task() != null && task.getPrevious_task().getId() > 0) {
-                    // Get the previous task from database to ensure we have the correct ID
                     Task previousTaskInDb = client_task.getTaskById(task.getPrevious_task().getId());
                     if (previousTaskInDb != null) {
                         previousTaskInDb.setNext_task(task);
@@ -714,7 +648,6 @@ public class AddTaskActivity extends AppCompatActivity {
 
         Toast.makeText(this, "✅ تم حفظ " + taskList.size() + " مهمة بنجاح", Toast.LENGTH_SHORT).show();
 
-        // Final calculation and update of plan duration
         try {
             Duration planDuration = dbHelperPlan.calculatePlanDuration(planId, client_task);
             Plan plan = dbHelperPlan.getPlanByID(planId);

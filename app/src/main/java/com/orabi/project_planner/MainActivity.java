@@ -1,6 +1,7 @@
 package com.orabi.project_planner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Plan> allPlans;
     private PlanAdapter adapter;
     private String currentFilter = "All";
+    private TextView tvUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +37,20 @@ public class MainActivity extends AppCompatActivity {
 
         client_plan = new DBHelperPlan(this);
 
+        tvUserName = findViewById(R.id.tvUserName);
+
+        loadUserName();
+
         LinearLayout header = findViewById(R.id.headerLayout);
         header.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddPlanActivity.class);
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
 
-        // Initialize filter buttons
         TextView filterAll = findViewById(R.id.filterAll);
         TextView filterInProgress = findViewById(R.id.filterInProgress);
         TextView filterWaiting = findViewById(R.id.filterWaiting);
 
-        // Set click listeners for filter buttons
         filterAll.setOnClickListener(v -> {
             currentFilter = "All";
             updateFilterUI();
@@ -65,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             applyFilter();
         });
 
-        // Get all plans from database
         allPlans = client_plan.getPlansDetails();
 
         RecyclerView rvPlans = findViewById(R.id.rvPlans);
@@ -74,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new PlanAdapter(allPlans, this);
         rvPlans.setAdapter(adapter);
 
-        // Update UI for current filter
         updateFilterUI();
 
         ImageView btnAdd = findViewById(R.id.navAdd);
@@ -92,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void loadUserName() {
+        SharedPreferences prefs = getSharedPreferences("user_data", MODE_PRIVATE);
+        String userName = prefs.getString("user_name", "User");
+
+        if (userName == null || userName.trim().isEmpty() || userName.equals("USER NAME")) {
+            userName = "User";
+        }
+
+        tvUserName.setText("HEY, " + userName);
+    }
 
     @Override
     protected void onDestroy() {
@@ -104,17 +116,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        // Optional: stop timer when app goes to background to save battery
         if (adapter != null) {
             adapter.stopTimer();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserName();
+
+        allPlans = client_plan.getPlansDetails();
+        applyFilter();
+    }
+
     private void updateFilterUI() {
         TextView filterAll = findViewById(R.id.filterAll);
         TextView filterInProgress = findViewById(R.id.filterInProgress);
         TextView filterWaiting = findViewById(R.id.filterWaiting);
 
-        // Reset all buttons
         filterAll.setBackgroundResource(R.drawable.rounded_time_bg);
         filterAll.setTextColor(getResources().getColor(R.color.text_like_background));
 
@@ -124,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
         filterWaiting.setBackgroundResource(R.drawable.rounded_time_bg);
         filterWaiting.setTextColor(getResources().getColor(R.color.text_like_background));
 
-        // Highlight current filter
         switch (currentFilter) {
             case "All":
                 filterAll.setBackgroundResource(R.drawable.rounded_button_bg);
@@ -156,13 +175,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         adapter.updatePlans(filteredPlans);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Refresh plans when returning to MainActivity
-        allPlans = client_plan.getPlansDetails();
-        applyFilter();
     }
 }
