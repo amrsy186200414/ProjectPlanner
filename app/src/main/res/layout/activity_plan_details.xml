@@ -122,7 +122,9 @@
             android:layout_height="48dp"
             android:background="@drawable/rounded_button_bg"
             android:src="@drawable/ic_addtask"
-            android:elevation="4dp"/>
+            android:elevation="4dp"
+            android:enabled="true"
+            android:clickable="true"/>
 
         <TextView
             android:id="@+id/tvTasksInfoLabel"

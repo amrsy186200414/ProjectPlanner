@@ -11,7 +11,6 @@ public class Duration {
         days = 0;
         hours = 0;
         minutes = 0;
-        minutes=0;
     }
 
     public Duration(int months, int days, int hours, int minutes) {
@@ -71,109 +70,60 @@ public class Duration {
     }
 
     // ADD THIS METHOD: Convert string representation to Duration
-    public static Duration fromString(String durationStr) {
-        // Default values
-        int months = 0;
-        int days = 0;
-        int hours = 0;
-        int minutes = 0;
-
-        if (durationStr == null || durationStr.isEmpty()) {
-            return new Duration();
-        }
-
-        // Try to parse the string format (e.g., "2 mon ,5 d ,3 h ,10 min ,")
-        String str = durationStr.trim();
-
-        // Remove trailing comma if present
-        if (str.endsWith(",")) {
-            str = str.substring(0, str.length() - 1).trim();
-        }
-
-        // Split by comma to get individual components
-        String[] parts = str.split(",");
-
-        for (String part : parts) {
-            part = part.trim();
-            if (part.isEmpty()) {
-                continue;
-            }
-
-            // Split by space to separate value and unit
-            String[] valueUnit = part.split("\\s+");
-            if (valueUnit.length < 2) {
-                continue; // Skip invalid format
-            }
-
-            try {
-                int value = Integer.parseInt(valueUnit[0]);
-                String unit = valueUnit[1].toLowerCase();
-
-                switch (unit) {
-                    case "mon":
-                        months = value;
-                        break;
-                    case "d":
-                        days = value;
-                        break;
-                    case "h":
-                        hours = value;
-                        break;
-                    case "min":
-                        minutes = value;
-                        break;
-                    default:
-                        // Unknown unit, ignore
-                        break;
-                }
-            } catch (NumberFormatException e) {
-                // Invalid number, skip this part
-            }
-        }
-
-        return new Duration(months, days, hours, minutes);
-    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        boolean addedPrevious = false;
+        if (months > 0) sb.append(months).append("mo ");
+        if (days > 0) sb.append(days).append("d ");
+        if (hours > 0) sb.append(hours).append("h ");
+        if (minutes > 0 || sb.length() == 0) sb.append(minutes).append("m");
+        return sb.toString().trim();
+    }
 
-        if (months > 0) {
-            sb.append(months).append(" mon");
-            addedPrevious = true;
+    // Static method to parse from string
+    public static Duration fromString(String durationStr) {
+        if (durationStr == null || durationStr.isEmpty()) {
+            return new Duration(0, 0, 0, 0);
         }
 
-        if (days > 0) {
-            if (addedPrevious) {
-                sb.append(" ,");
+        try {
+            String[] parts = durationStr.split(":");
+            if (parts.length == 4) {
+                return new Duration(
+                        Integer.parseInt(parts[0]), // months
+                        Integer.parseInt(parts[1]), // days
+                        Integer.parseInt(parts[2]), // hours
+                        Integer.parseInt(parts[3])  // minutes
+                );
             }
-            sb.append(days).append(" d");
-            addedPrevious = true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return new Duration(0, 0, 0, 0);
+    }
+    public void add(Duration other) {
+        this.minutes += other.minutes;
+        this.hours += other.hours;
+        this.days += other.days;
+        this.months += other.months;
 
-        if (hours > 0) {
-            if (addedPrevious) {
-                sb.append(" ,");
-            }
-            sb.append(hours).append(" h");
-            addedPrevious = true;
+        // Normalize
+        if (this.minutes >= 60) {
+            this.hours += this.minutes / 60;
+            this.minutes = this.minutes % 60;
         }
-
-        if (minutes > 0) {
-            if (addedPrevious) {
-                sb.append(" ,");
-            }
-            sb.append(minutes).append(" min");
+        if (this.hours >= 24) {
+            this.days += this.hours / 24;
+            this.hours = this.hours % 24;
         }
-
-        // Add trailing comma to match your original format
-        if (sb.length() > 0) {
-            sb.append(" ,");
-        } else {
-            sb.append("0 min ,");
+        if (this.days >= 30) {
+            this.months += this.days / 30;
+            this.days = this.days % 30;
         }
+    }
 
-        return sb.toString();
+    public int getTotalDays() {
+        return (this.months * 30) + this.days;
     }
 }

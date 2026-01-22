@@ -189,7 +189,17 @@
                 android:textColor="@color/dark_text"
                 android:maxLines="1"
                 app:layout_constraintTop_toBottomOf="@id/labelTaskDuration" />
-
+            <TextView
+                android:id="@+id/tvDurationExample"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="4dp"
+                android:text="أمثلة: 2d, 3h 30m, 1mo 5d, 45m"
+                android:textSize="12sp"
+                android:textColor="@color/secondary_text"
+                app:layout_constraintStart_toStartOf="@id/etTaskDuration"
+                app:layout_constraintTop_toBottomOf="@id/etTaskDuration" />
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnAddPreview"
                 android:layout_width="160dp"

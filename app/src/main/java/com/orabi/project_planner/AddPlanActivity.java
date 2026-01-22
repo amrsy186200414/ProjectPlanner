@@ -16,11 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddPlanActivity extends AppCompatActivity {
-
+    int idplan;
     private LinearLayout tasksContainer;
     private List<Task> taskList = new ArrayList<>();
     private int taskCounter = 1;
     DBHelperPlan client_plan;
+    DBHelperTask client_task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +46,23 @@ public class AddPlanActivity extends AppCompatActivity {
                 finish();
             }
         });
-        Button btnGoToTasks = findViewById(R.id.btnGoToTasks);
+        androidx.cardview.widget.CardView btnGoToTasks = findViewById(R.id.btnGoToTasks);
+
+
         btnGoToTasks.setOnClickListener(v -> {
+
+            String planName = etPlanName.getText().toString().trim();
+            String planDescription = etPlanDescription.getText().toString().trim();
+            if (planName.isEmpty()) {
+                etPlanName.setError("يرجى إدخال اسم الخطة");
+                return;
+            }
+            Plan newPlan = new Plan(planName,"", "Waiting", planDescription );
+            idplan= (int)client_plan.addPlan(newPlan);
+
             Intent intent = new Intent(AddPlanActivity.this, AddTaskActivity.class);
+            intent.putExtra("PLAN_ID", idplan);
+
             startActivity(intent);
         });
 
@@ -90,37 +105,38 @@ public class AddPlanActivity extends AppCompatActivity {
         {
             try {
 
-            String planName = etPlanName.getText().toString().trim();
-            String planDescription = etPlanDescription.getText().toString().trim();
-
-            if (planName.isEmpty()) {
-                etPlanName.setError("يرجى إدخال اسم الخطة");
+//            String planName = etPlanName.getText().toString().trim();
+//            String planDescription = etPlanDescription.getText().toString().trim();
+//
+//            if (planName.isEmpty()) {
+//                etPlanName.setError("يرجى إدخال اسم الخطة");
+//                return;
+//            }
+                client_task=new DBHelperTask(this);
+                taskList= client_task.getTasksByPlanId(idplan);
+            if (taskList.isEmpty()) {
+                Toast.makeText(this, "يرجى إضافة مهمة واحدة على الأقل", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-//            if (taskList.isEmpty()) {
-//                Toast.makeText(this, "يرجى إضافة مهمة واحدة على الأقل", Toast.LENGTH_SHORT).show();
-//                return;
+//            Plan newPlan = new Plan(planName,"", "Waiting", planDescription );
+//            client_plan.addPlan(newPlan);
+
+//            List<Plan> allPlans = client_plan.getPlansDetails();
+//
+//            Log.d("DEBUG", "Number of plans: " + allPlans.size());
+//        if (allPlans.isEmpty()) {
+//            Log.d("DEBUG", "Database is empty!");
+//        } else {
+//            for (int i = 0; i < allPlans.size(); i++) {
+//                Plan p = allPlans.get(i);
+//                Log.d("DEBUG", "Plan " + i + ": " +
+//                        "ID=" + p.getId() + ", " +
+//                        "Title=" + p.getTitle() + ", " +
+//                        "Start=" + p.getStartDate() + ", " +
+//                        "Status=" + p.getStatus());
 //            }
-
-            Plan newPlan = new Plan(planName,"", "Waiting", planDescription );
-            client_plan.addPlan(newPlan);
-
-            List<Plan> allPlans = client_plan.getPlansDetails();
-
-            Log.d("DEBUG", "Number of plans: " + allPlans.size());
-        if (allPlans.isEmpty()) {
-            Log.d("DEBUG", "Database is empty!");
-        } else {
-            for (int i = 0; i < allPlans.size(); i++) {
-                Plan p = allPlans.get(i);
-                Log.d("DEBUG", "Plan " + i + ": " +
-                        "ID=" + p.getId() + ", " +
-                        "Title=" + p.getTitle() + ", " +
-                        "Start=" + p.getStartDate() + ", " +
-                        "Status=" + p.getStatus());
-            }
-        }
+//        }
                 Toast.makeText(this, "تم حفظ الخطة بنجاح!", Toast.LENGTH_SHORT).show();
                 finish();
         }
