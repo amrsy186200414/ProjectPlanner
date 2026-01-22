@@ -4,8 +4,12 @@ package com.orabi.project_planner;
 // import androidx.room.Entity;
 // import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 public class Plan {
     private int id;
+    private String endDate; // Add this field
+
     private String title;
     private String startDate;
     private String expectedEndDate;
@@ -21,6 +25,8 @@ public class Plan {
         this.status = "";
         this.describtion = "";
         duration=new Duration();
+        this.endDate = ""; // Initialize
+
     }
 
     // Constructor with ID
@@ -45,7 +51,21 @@ public class Plan {
         duration=new Duration();
 
     }
+    // In Plan.java, add this method
+    public boolean isAllTasksCompleted(List<Task> tasks) {
+        if (tasks == null || tasks.isEmpty()) {
+            return false;
+        }
 
+        for (Task task : tasks) {
+            if (!"completed".equals(task.getStatus())) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public String getEndDate() { return endDate; }
+    public void setEndDate(String endDate) { this.endDate = endDate; }
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

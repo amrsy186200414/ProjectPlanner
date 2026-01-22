@@ -48,7 +48,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         // Set duration
         if (task.getExpected_duration() != null) {
-            holder.tvDurationValue.setText(task.getExpected_duration().getDays() + "d");
+            holder.tvDurationValue.setText(task.getExpected_duration().toString());
         } else {
             holder.tvDurationValue.setText("N/A");
         }
@@ -72,18 +72,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         String status = task.getStatus();
         holder.tvStatusValue.setText(status != null ? status : "Waiting");
 
-        // Set button text and color based on status
+        // Task 1: Make button unclickable when status is "Waiting"
+        // Task 3: When clicking "End" button, end current task and start next task
         if ("completed".equals(status)) {
             holder.btnAction.setText("Completed");
             holder.btnAction.setEnabled(false);
-            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg);
+            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg_disabled);
+            holder.btnAction.setAlpha(0.5f);
             holder.indicator.setBackgroundColor(Color.parseColor("#4CAF50"));
             holder.tvStatusValue.setTextColor(Color.parseColor("#4CAF50"));
             holder.tvTimeRemainingBadge.setText("");
+
+            // Display end date if available
+            if (task.getEndDate() != null) {
+                holder.tvStatusValue.setText("Ended: " + dateFormat.format(task.getEndDate()));
+            }
         } else if ("in_progress".equals(status)) {
             holder.btnAction.setText("End");
             holder.btnAction.setEnabled(true);
             holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg);
+            holder.btnAction.setAlpha(1f);
             holder.indicator.setBackgroundColor(Color.parseColor("#FFC107"));
             holder.tvStatusValue.setTextColor(Color.parseColor("#FFC107"));
 
@@ -106,10 +114,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                     holder.tvTimeRemainingBadge.setTextColor(Color.parseColor("#F44336"));
                 }
             }
-        } else {
-            holder.btnAction.setText("Start");
-            holder.btnAction.setEnabled(true);
-            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg);
+        } else { // Waiting status
+            holder.btnAction.setText("Waiting");
+            holder.btnAction.setEnabled(false); // Task 1: Make unclickable
+            holder.btnAction.setBackgroundResource(R.drawable.rounded_button_bg_disabled);
+            holder.btnAction.setAlpha(0.5f);
             holder.indicator.setBackgroundColor(Color.parseColor("#757575"));
             holder.tvStatusValue.setTextColor(Color.parseColor("#757575"));
             holder.tvTimeRemainingBadge.setText("");
@@ -117,37 +126,33 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         // Set click listener for action button
         holder.btnAction.setOnClickListener(v -> {
-            if ("Start".equals(holder.btnAction.getText().toString())) {
-                startTask(task);
-            } else if ("End".equals(holder.btnAction.getText().toString())) {
+            if ("End".equals(holder.btnAction.getText().toString())) {
                 endTask(task);
             }
         });
     }
 
     private void startTask(Task task) {
-        task.setStart_date(new Date());
-        task.setStatus("in_progress");
-        dbHelperTask.updateTaskDetails(task);
-        notifyDataSetChanged();
+        // Task 2: Check if previous task is null or completed
+        if (task.getPrevious_task() == null ||
+                (task.getPrevious_task() != null && "completed".equals(task.getPrevious_task().getStatus()))) {
+            task.setStart_date(new Date());
+            task.setStatus("in_progress");
+            dbHelperTask.updateTaskDetails(task);
+            notifyDataSetChanged();
+        }
     }
 
     private void endTask(Task task) {
-        // Calculate real duration
-        if (task.getStart_date() != null) {
-            long realDuration = System.currentTimeMillis() - task.getStart_date().getTime();
-            task.setReal_duration(Duration.fromMillis(realDuration));
-        }
-
+        // Task 3: End current task and start next task automatically
+        // Set end date (Task 6)
+        task.setEndDate(new Date());
         task.setStatus("completed");
         dbHelperTask.updateTaskDetails(task);
 
-        // Get the next task ID from database
-        // Since we don't have getNextTaskId method, we'll need to find the next task
-        // based on position in the list for now
-        int currentPosition = taskList.indexOf(task);
-        if (currentPosition < taskList.size() - 1) {
-            Task nextTask = taskList.get(currentPosition + 1);
+        // Start next task if exists
+        if (task.getNext_task() != null) {
+            Task nextTask = dbHelperTask.getTaskById(task.getNext_task().getId());
             if (nextTask != null && "Waiting".equals(nextTask.getStatus())) {
                 nextTask.setStart_date(new Date());
                 nextTask.setStatus("in_progress");

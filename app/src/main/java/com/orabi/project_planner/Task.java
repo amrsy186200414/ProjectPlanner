@@ -7,6 +7,8 @@ public class Task {
     private int id;
     private String status;
     private Date start_date;
+    private Date endDate; // Add this field
+
     private Duration expected_duration;
     private int planid;
     private Duration real_duration;
@@ -48,7 +50,8 @@ public class Task {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-
+    public Date getEndDate() { return endDate; }
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 

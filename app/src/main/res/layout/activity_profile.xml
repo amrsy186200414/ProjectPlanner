@@ -11,6 +11,12 @@
     android:paddingBottom="24dp"
     android:paddingTop="40dp">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tvDurationValue" />
+
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="48dp"

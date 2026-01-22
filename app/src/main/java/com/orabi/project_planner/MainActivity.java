@@ -92,6 +92,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (adapter != null) {
+            adapter.stopTimer();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Optional: stop timer when app goes to background to save battery
+        if (adapter != null) {
+            adapter.stopTimer();
+        }
+    }
     private void updateFilterUI() {
         TextView filterAll = findViewById(R.id.filterAll);
         TextView filterInProgress = findViewById(R.id.filterInProgress);
